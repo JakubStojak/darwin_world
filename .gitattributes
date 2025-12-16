@@ -1,0 +1,8 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Executables
+*.gradle      text
+*.java        text
+gradlew       text eol=lf
+*.bat         text eol=crlf
