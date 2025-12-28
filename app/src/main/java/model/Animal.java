@@ -4,7 +4,7 @@ import util.MapDirection;
 
 import java.util.UUID;
 
-public class Animal implements WorldElement{
+public class Animal implements WorldElement {
     private final Parameters params;
     private final UUID id = UUID.randomUUID();
     private MapDirection direction;
@@ -12,8 +12,9 @@ public class Animal implements WorldElement{
     private int energy;
     private final Genome genome;
     private Parasite parasite;
-    int age = 0;
-    int childrenCount = 0;
+    private int age = 0;
+    private int childrenCount = 0;
+    private int deathDate;
 
     public Animal(Parameters params, MapDirection direction, Vector2d position, Genome genome) {
         this.params = params;
@@ -37,6 +38,22 @@ public class Animal implements WorldElement{
 
     public int getEnergy() {
         return energy;
+    }
+
+    public int getChildrenCount() {
+        return childrenCount;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public int getDeathDate() {
+        return deathDate;
+    }
+
+    public void setDeathDate(int date) {
+        deathDate = date;
     }
 
     public Vector2d getPosition() {
@@ -69,24 +86,36 @@ public class Animal implements WorldElement{
         this.energy -= params.energyLossPerDay();
     }
 
-    public boolean canReproduce(Animal animal1, Animal animal2) {
-        if (animal1.equals(animal2)) {
+    public boolean canReproduce(Animal other) {
+        if (this.equals(other)) {
             return false;
         }
-        if (animal1.position != animal2.position) {
+        if (this.position != other.position) {
             return false;
         }
-        return animal1.energy > params.saturationEnergy()
-                && animal2.energy > params.saturationEnergy();
+        return this.energy > params.saturationEnergy()
+                && other.energy > params.saturationEnergy();
     }
 
-    public Animal reproduce(Animal animal1, Animal animal2) throws UnableToBreedException {
-        if (!canReproduce(animal1, animal2)) {
-            throw new UnableToBreedException("Animal:  " + animal1.getId()
-                    + "and Animal: " + animal2.getId() + "unable to breed.");
+    public Animal reproduce(Animal other) throws UnableToBreedException {
+        if (!canReproduce(other)) {
+            throw new UnableToBreedException("Animal:  " + this.getId()
+                    + "and Animal: " + other.getId() + "unable to breed.");
         }
-        Genome childGenome = animal1.getGenome().createChildGenome(animal1, animal2);
-        return new Animal(params, MapDirection.fromInt(childGenome.getMove()), animal1.getPosition(), childGenome);
+        Genome childGenome = this.getGenome().createChildGenome(this, other);
+        return new Animal(params, MapDirection.fromInt(childGenome.getMove()), this.getPosition(), childGenome);
+
+    }
+
+    public void oppositeDirection() {
+        direction = direction.rotate(4);
+    }
+
+    public void move(){
+
+    }
+
+    public void eat() {
 
     }
 }
