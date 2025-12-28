@@ -2,6 +2,7 @@ package model;
 
 public record Parameters(
      int mapHeight,
+     int mapWidth,
      int startGrassNumber,
      int energyPerGrass,
      int newGrassPerDay,

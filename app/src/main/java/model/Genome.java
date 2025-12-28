@@ -20,7 +20,7 @@ public class Genome {
         }
     }
 
-    private Genome(Parameters params, List<Integer> childGenes) {
+    public Genome(Parameters params, List<Integer> childGenes) {
         this.params = params;
         this.genes = childGenes;
     }
