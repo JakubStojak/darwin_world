@@ -11,7 +11,8 @@ public class Simulation implements Runnable{
     public Simulation(Parameters parameters){
         this.parameters = parameters;
         map = new GlobeMap(parameters);
-        map.initializeAnimals();
+        map.initializeHerbivores();
+        map.initializeParasites();
     }
 
     @Override
@@ -40,7 +41,7 @@ public class Simulation implements Runnable{
     public void simulateDay() {
         map.removeDeadAnimals(dayCount);
         map.moveAllAnimals();
-        map.animalsInteractions();
+        map.animalInteractions();
         map.growPlants(parameters.newGrassPerDay());
     }
 

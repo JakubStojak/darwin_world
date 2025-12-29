@@ -2,9 +2,6 @@ package model;
 
 import util.Boundary;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface WorldMap extends MoveValidator {
@@ -33,11 +30,20 @@ public interface WorldMap extends MoveValidator {
      * Remove animal from map.
      * @param animal The animal to be removed from map.
      */
-    void remove(Animal animal);
+    void removeAnimal(Animal animal);
+
+    /**
+     * Remove plant from map
+     * @param plant The animal to be removed from map.
+     */
+    void removePlant(Grass plant);
+
+
     /**
      * Moves an animal (if it is present on the map).
      * If the move is not possible, this method has no effect.
      */
+
     void move(Animal animal);
 
     /**
@@ -59,9 +65,14 @@ public interface WorldMap extends MoveValidator {
     void growPlants(int numberOfPlants);
 
     /**
-     * Put initial animals on the map.
+     * Put initial herbivores on the map.
      */
-    void initializeAnimals();
+    void initializeHerbivores();
+
+    /**
+     * Put initial parasites on the map.
+     */
+    void initializeParasites();
 
     /**
      * Count plants on the map.

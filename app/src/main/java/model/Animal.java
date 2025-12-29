@@ -4,17 +4,16 @@ import util.MapDirection;
 
 import java.util.UUID;
 
-public class Animal implements WorldElement {
-    private final Parameters params;
-    private final UUID id = UUID.randomUUID();
-    private MapDirection direction;
-    private Vector2d position;
-    private int energy;
-    private final Genome genome;
-    private Parasite parasite;
-    private int age = 0;
-    private int childrenCount = 0;
-    private int deathDate;
+public abstract class Animal implements WorldElement {
+    protected final Parameters params;
+    protected final UUID id = UUID.randomUUID();
+    protected MapDirection direction;
+    protected Vector2d position;
+    protected int energy;
+    protected final Genome genome;
+    protected int age = 0;
+    protected int childrenCount = 0;
+    protected int deathDate;
 
     public Animal(Parameters params, MapDirection direction, Vector2d position, Genome genome) {
         this.params = params;
@@ -90,6 +89,9 @@ public class Animal implements WorldElement {
         if (this.equals(other)) {
             return false;
         }
+        if (this.getClass() != other.getClass()) {
+            return false;
+        }
         if (this.position != other.position) {
             return false;
         }
@@ -97,26 +99,16 @@ public class Animal implements WorldElement {
                 && other.energy > params.saturationEnergy();
     }
 
-    public Animal reproduce(Animal other) throws UnableToBreedException {
-        if (!canReproduce(other)) {
-            throw new UnableToBreedException("Animal:  " + this.getId()
-                    + "and Animal: " + other.getId() + "unable to breed.");
-        }
-        Genome childGenome = this.getGenome().createChildGenome(this, other);
-        return new Animal(params, MapDirection.fromInt(childGenome.getMove()), this.getPosition(), childGenome);
-
-    }
 
     public void oppositeDirection() {
         direction = direction.rotate(4);
     }
 
-    public void move(){
-
+    public void move() {
     }
 
-    public void eat() {
-
+    public void loseEnergyForBreed() {
+        this.energy -= params.saturationEnergy();
     }
 }
 

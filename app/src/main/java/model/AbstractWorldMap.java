@@ -65,8 +65,10 @@ public abstract class AbstractWorldMap implements WorldMap{
         return plants.containsKey(position);
     }
 
+    public boolean isOccupiedByAnimal(Vector2d position) { return animals.containsKey(position); }
+
     @Override
-    public void remove(Animal animal) {
+    public void removeAnimal(Animal animal) {
         if(animal != null){
             Vector2d position = animal.getPosition();
             List<Animal> animalsAt = animals.get(position);
@@ -81,16 +83,20 @@ public abstract class AbstractWorldMap implements WorldMap{
         }
     }
 
+    public void removePlant(Grass plant) {
+        plants.remove(plant.getPosition());
+        mapChanged("Plant eaten at " + plant.getPosition());
+    }
+
     @Override
     public void removeDeadAnimals(int currentDate){
-        for (List<Animal> animalsAt : animals.values()) {
-            Iterator<Animal> iterator = animalsAt.iterator();
-            while (iterator.hasNext()) {
-                Animal animal = iterator.next();
-                if (animal.getEnergy()<=0){
-                    animal.setDeathDate(currentDate);
-                    iterator.remove();
-                }
+        List<Animal> allAnimals = new ArrayList<>();
+        animals.values().forEach(allAnimals::addAll);
+
+        for (Animal animal : allAnimals) {
+            if (animal.isDead()) {
+                animal.setDeathDate(currentDate);
+                removeAnimal(animal);
             }
         }
     }

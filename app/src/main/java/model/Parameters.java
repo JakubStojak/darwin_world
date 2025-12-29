@@ -10,7 +10,6 @@ public record Parameters(
      int startAnimalNumber,
      int energyLossPerDay,
      int saturationEnergy,
-     int energyLossPerBreed,
      int minimumMutations,
      int maximumMutations,
      int genomeLength,
