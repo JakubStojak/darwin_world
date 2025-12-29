@@ -114,7 +114,7 @@ public class GlobeMap extends AbstractWorldMap {
 
     }
 
-    public void AnimalInteractions() {
+    public void animalInteractions() {
         List<Animal> newborns = new ArrayList<>();
 
         for (Vector2d position : getAllOccupiedPositions()) {

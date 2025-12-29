@@ -10,8 +10,8 @@ public abstract class AbstractWorldMap implements WorldMap{
     private final UUID id = UUID.randomUUID();
     protected final Parameters parameters;
     private final List<MapChangeListener> observers = new ArrayList<>();
-    protected Map<Vector2d, List<Animal>> animals = new HashMap<>();
-    protected Map<Vector2d, Grass> plants = new HashMap<>();
+    protected final Map<Vector2d, List<Animal>> animals = new HashMap<>();
+    protected final Map<Vector2d, Grass> plants = new HashMap<>();
 
 
     public AbstractWorldMap(Parameters parameters) {

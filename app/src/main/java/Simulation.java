@@ -41,7 +41,7 @@ public class Simulation implements Runnable{
     public void simulateDay() {
         map.removeDeadAnimals(dayCount);
         map.moveAllAnimals();
-        map.AnimalInteractions();
+        map.animalInteractions();
         map.growPlants(parameters.newGrassPerDay());
     }
 
