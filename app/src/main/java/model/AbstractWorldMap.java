@@ -1,6 +1,7 @@
 package model;
 
 import util.Boundary;
+import util.Parameters;
 
 import java.util.*;
 
@@ -45,6 +46,13 @@ public abstract class AbstractWorldMap implements WorldMap{
                 throw new IncorrectPositionException(animal.getPosition());
             }
         }
+    }
+
+    @Override
+    public int getAnimalCount() {
+        return animals.values().stream()
+                .mapToInt(List::size)
+                .sum();
     }
 
     @Override

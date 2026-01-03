@@ -82,6 +82,8 @@ public interface WorldMap extends MoveValidator {
 
     Boundary getCurrentBounds();
 
+    int getAnimalCount();
+
     UUID getId();
 
 }

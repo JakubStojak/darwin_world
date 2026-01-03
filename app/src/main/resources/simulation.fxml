@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.layout.HBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            minHeight="600.0" minWidth="600.0"
+            fx:controller="presenter.SimulationPresenter">
+
+    <center>
+        <VBox alignment="CENTER" spacing="10" style="-fx-padding: 10;">
+            <Canvas fx:id="mapGrid" height="500" width="500"/>
+        </VBox>
+    </center>
+
+    <bottom>
+        <VBox alignment="CENTER" spacing="10" style="-fx-padding: 20;">
+            <Label fx:id="infoLabel" text="Symulacja działa..."/>
+            <HBox alignment="CENTER" spacing="20">
+                <Button text="Pauza" onAction="#onPauseClicked"/>
+                <Button text="Wznów" onAction="#onResumeClicked"/>
+            </HBox>
+        </VBox>
+    </bottom>
+</BorderPane>

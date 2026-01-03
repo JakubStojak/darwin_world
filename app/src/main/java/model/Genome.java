@@ -1,4 +1,6 @@
 package model;
+import util.Parameters;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;

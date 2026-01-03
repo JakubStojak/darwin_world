@@ -1,6 +1,7 @@
 package model;
 
 import util.MapDirection;
+import util.Parameters;
 import util.RandomPositionGenerator;
 import java.util.*;
 

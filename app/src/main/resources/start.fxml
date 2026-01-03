@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.geometry.Insets?>
+
+<ScrollPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fitToWidth="true"
+            minHeight="600.0" minWidth="300.0"
+            fx:controller="presenter.StartPresenter">
+    <content>
+        <VBox spacing="10" alignment="TOP_CENTER">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <Label text="KONFIGURACJA SYMULACJI" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+            <Label text="Mapa" style="-fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+            <GridPane hgap="5" vgap="5" alignment="CENTER">
+                <Label text="Wysokość:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="mapHeightField" GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="60"/>
+
+                <Label text="Szerokość:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="mapWidthField" GridPane.rowIndex="1" GridPane.columnIndex="1" prefWidth="60"/>
+            </GridPane>
+
+            <Label text="Rośliny" style="-fx-font-weight: bold; -fx-text-fill: #27ae60;"/>
+            <GridPane hgap="5" vgap="5" alignment="CENTER">
+                <Label text="Startowa ilość:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="startGrassNumberField" GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="60"/>
+
+                <Label text="Energia z trawy:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="energyPerGrassField" GridPane.rowIndex="1" GridPane.columnIndex="1" prefWidth="60"/>
+
+                <Label text="Wzrost dzienny:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextField fx:id="newGrassPerDayField" GridPane.rowIndex="2" GridPane.columnIndex="1" prefWidth="60"/>
+            </GridPane>
+
+            <Label text="Zwierzęta" style="-fx-font-weight: bold; -fx-text-fill: #2980b9;"/>
+            <GridPane hgap="5" vgap="5" alignment="CENTER">
+                <Label text="Startowa energia:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="startAnimalEnergyField" GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="60"/>
+
+                <Label text="Startowa ilość:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="startAnimalNumberField" GridPane.rowIndex="1" GridPane.columnIndex="1" prefWidth="60"/>
+
+                <Label text="Strata dzienna:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextField fx:id="energyLossPerDayField" GridPane.rowIndex="2" GridPane.columnIndex="1" prefWidth="60"/>
+
+                <Label text="Energia sytości:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <TextField fx:id="saturationEnergyField" GridPane.rowIndex="3" GridPane.columnIndex="1" prefWidth="60"/>
+            </GridPane>
+
+            <Label text="Genetyka" style="-fx-font-weight: bold; -fx-text-fill: #8e44ad;"/>
+            <GridPane hgap="5" vgap="5" alignment="CENTER">
+                <Label text="Min. mutacji:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="minimumMutationsField" GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="60"/>
+
+                <Label text="Max. mutacji:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="maximumMutationsField" GridPane.rowIndex="1" GridPane.columnIndex="1" prefWidth="60"/>
+
+                <Label text="Długość genomu:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextField fx:id="genomeLengthField" GridPane.rowIndex="2" GridPane.columnIndex="1" prefWidth="60"/>
+            </GridPane>
+
+            <Label text="Pasożyty" style="-fx-font-weight: bold; -fx-text-fill: #c0392b;"/>
+            <GridPane hgap="5" vgap="5" alignment="CENTER">
+                <Label text="Startowa ilość:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="startParasiteNumberField" GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="60"/>
+
+                <Label text="Strata hosta:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="hostEnergyLossPerParasiteField" GridPane.rowIndex="1" GridPane.columnIndex="1" prefWidth="60"/>
+
+                <Label text="Strata bez hosta:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextField fx:id="energyLossForParasiteWithoutHostField" GridPane.rowIndex="2" GridPane.columnIndex="1" prefWidth="60"/>
+            </GridPane>
+
+            <Label fx:id="errorLabel" textFill="RED" wrapText="true"/>
+
+            <Button text="URUCHOM NOWĄ SYMULACJĘ" onAction="#onSimulationStartClicked"
+                    style="-fx-font-size: 14px; -fx-background-color: lightgreen; -fx-padding: 10 20;"/>
+        </VBox>
+    </content>
+</ScrollPane>
