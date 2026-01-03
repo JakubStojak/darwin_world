@@ -1,6 +1,8 @@
 package model;
 
 import util.MapDirection;
+import util.Parameters;
+
 import static util.MapDirection.*;
 
 public class Parasite extends Animal {
@@ -15,6 +17,7 @@ public class Parasite extends Animal {
         if (!hasHost()) {
             MapDirection moveDirection = MapDirection.fromInt(this.genome.getMove());
             this.position = this.position.add(moveDirection.toUnitVector());
+            this.genome.next();
         }
     }
 

@@ -1,6 +1,8 @@
 package model;
 
 import util.MapDirection;
+import util.Parameters;
+
 import java.util.*;
 
 public class Herbivore extends Animal {
@@ -23,6 +25,7 @@ public class Herbivore extends Animal {
     @Override
     public void move() {
         MapDirection moveDirection = MapDirection.fromInt(this.getGenome().getMove());
+        this.genome.next();
         Vector2d newPosition = this.position.add(moveDirection.toUnitVector());
         this.setPosition(newPosition);
     }

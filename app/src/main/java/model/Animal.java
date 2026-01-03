@@ -1,6 +1,7 @@
 package model;
 
 import util.MapDirection;
+import util.Parameters;
 
 import java.util.UUID;
 

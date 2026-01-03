@@ -2,6 +2,7 @@ package model;
 
 import org.junit.jupiter.api.Test;
 import util.MapDirection;
+import util.Parameters;
 
 import static org.junit.jupiter.api.Assertions.*;
 
