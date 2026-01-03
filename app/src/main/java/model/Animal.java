@@ -92,7 +92,7 @@ public abstract class Animal implements WorldElement {
         if (this.getClass() != other.getClass()) {
             return false;
         }
-        if (this.position != other.position) {
+        if (!this.position.equals(other.position)) {
             return false;
         }
         return this.energy > params.saturationEnergy()

@@ -50,8 +50,6 @@ public class RandomPositionGenerator implements Iterable<Vector2d>{
                 generated++;
                 return new Vector2d(x, y);
             }
-
-
         };
     }
 }
