@@ -43,6 +43,8 @@ public class StartPresenter {
     @FXML
     private TextField startParasiteNumberField;
     @FXML
+    private TextField startParasiteEnergyField;
+    @FXML
     private TextField hostEnergyLossPerParasiteField;
     @FXML
     private TextField energyLossForParasiteWithoutHostField;
@@ -69,6 +71,7 @@ public class StartPresenter {
         maximumMutationsField.setText("2");
         genomeLengthField.setText("8");
         startParasiteNumberField.setText("4");
+        startParasiteEnergyField.setText("15");
         hostEnergyLossPerParasiteField.setText("1");
         energyLossForParasiteWithoutHostField.setText("1");
 
@@ -83,6 +86,7 @@ public class StartPresenter {
 
     private void toggleParasiteFields(boolean isEnabled) {
         startParasiteNumberField.setDisable(!isEnabled);
+        startParasiteEnergyField.setDisable(!isEnabled);
         hostEnergyLossPerParasiteField.setDisable(!isEnabled);
         energyLossForParasiteWithoutHostField.setDisable(!isEnabled);
     }
@@ -134,6 +138,7 @@ public class StartPresenter {
             int maxMut = Integer.parseInt(maximumMutationsField.getText());
             int genomeLen = Integer.parseInt(genomeLengthField.getText());
 
+            int startParasiteEnergy = 0;
             int startParasites = 0;
             int hostLoss = 0;
             int parasiteLoss = 0;
@@ -142,12 +147,13 @@ public class StartPresenter {
                 startParasites = Integer.parseInt(startParasiteNumberField.getText());
                 hostLoss = Integer.parseInt(hostEnergyLossPerParasiteField.getText());
                 parasiteLoss = Integer.parseInt(energyLossForParasiteWithoutHostField.getText());
+                startParasiteEnergy = Integer.parseInt(startParasiteEnergyField.getText());
             }
 
             return new Parameters(
                     height, width, startGrass, energyGrass, newGrass,
                     startEnergy, startAnimals, lossDay, saturation,
-                    minMut, maxMut, genomeLen,
+                    minMut, maxMut, genomeLen, startParasiteEnergy,
                     startParasites,
                     hostLoss,
                     parasiteLoss

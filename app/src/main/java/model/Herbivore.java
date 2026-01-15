@@ -12,16 +12,17 @@ public class Herbivore extends Animal {
         super(params, direction, position, genome);
     }
 
-    public Herbivore reproduce(Animal other) throws UnableToBreedException {
-        if (!canReproduce(other)) {
-            throw new UnableToBreedException("Animals " + this.getId() + " and " + other.getId() + " unable to breed.");
-        }
+    public Herbivore reproduce(Animal other) {
         Genome childGenome = this.getGenome().createChildGenome(this, other);
         this.loseEnergyForBreed();
         other.loseEnergyForBreed();
         this.increaseChildrenCount();
         other.increaseChildrenCount();
         return new Herbivore(params, MapDirection.fromInt(childGenome.getMove()), this.getPosition(), childGenome);
+    }
+
+    public void setEnergy() {
+        this.energy = params.startAnimalEnergy();
     }
 
     @Override
@@ -44,10 +45,6 @@ public class Herbivore extends Animal {
 
     public List<Parasite> getParasites() {
         return Collections.unmodifiableList(parasites);
-    }
-
-    public boolean hasParasites() {
-        return !parasites.isEmpty();
     }
 
     public void eat() {

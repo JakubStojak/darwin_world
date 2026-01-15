@@ -21,6 +21,10 @@ public class Parasite extends Animal {
         }
     }
 
+    public void setEnergy() {
+        this.energy = params.startParasiteEnergy();
+    }
+
     public void consume() {
         this.energy += params.hostEnergyLossPerParasite();
     }
@@ -51,10 +55,7 @@ public class Parasite extends Animal {
         return host;
     }
 
-    public Parasite reproduce(Animal other) throws UnableToBreedException {
-        if (!canReproduce(other)) {
-            throw new UnableToBreedException("Parasites unable to breed.");
-        }
+    public Parasite reproduce(Animal other) {
         Genome childGenome = this.getGenome().createChildGenome(this, other);
         this.loseEnergyForBreed();
         other.loseEnergyForBreed();

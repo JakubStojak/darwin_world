@@ -42,9 +42,8 @@ public class SimulationPresenter implements MapChangeListener {
         this.simulation = new Simulation(params);
         this.map = simulation.getMap();
 
-        if (this.map instanceof AbstractWorldMap abstractMap) {
-            abstractMap.registerObserver(this);
-        }
+        AbstractWorldMap abstractMap = (AbstractWorldMap) this.map;
+        abstractMap.registerObserver(this);
 
         series = new XYChart.Series<>();
         series.setName(trackedStat.toString());

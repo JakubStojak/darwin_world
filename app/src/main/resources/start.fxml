@@ -78,11 +78,14 @@
                 <Label text="Startowa ilość:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
                 <TextField fx:id="startParasiteNumberField" GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="60"/>
 
-                <Label text="Strata hosta:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                <TextField fx:id="hostEnergyLossPerParasiteField" GridPane.rowIndex="1" GridPane.columnIndex="1" prefWidth="60"/>
+                <Label text="Startowa energia:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="startParasiteEnergyField" GridPane.rowIndex="1" GridPane.columnIndex="1" prefWidth="60"/>
 
-                <Label text="Strata bez hosta:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                <TextField fx:id="energyLossForParasiteWithoutHostField" GridPane.rowIndex="2" GridPane.columnIndex="1" prefWidth="60"/>
+                <Label text="Strata hosta:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextField fx:id="hostEnergyLossPerParasiteField" GridPane.rowIndex="2" GridPane.columnIndex="1" prefWidth="60"/>
+
+                <Label text="Strata bez hosta:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <TextField fx:id="energyLossForParasiteWithoutHostField" GridPane.rowIndex="3" GridPane.columnIndex="1" prefWidth="60"/>
             </GridPane>
 
             <Label fx:id="errorLabel" textFill="RED" wrapText="true"/>

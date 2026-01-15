@@ -20,7 +20,6 @@ public abstract class Animal implements WorldElement {
         this.params = params;
         this.direction = direction;
         this.position = position;
-        this.energy = params.startAnimalEnergy();
         this.genome = genome;
     }
 
@@ -115,5 +114,7 @@ public abstract class Animal implements WorldElement {
     public void increaseChildrenCount() {
         this.childrenCount++;
     }
+
+    public abstract <T extends Animal> Animal reproduce(T parent2);
 }
 

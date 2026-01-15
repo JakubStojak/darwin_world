@@ -17,7 +17,6 @@ public class GlobeMap extends AbstractWorldMap {
     public void move(Animal animal) {
         if (animal == null) return;
 
-        Vector2d oldPosition = animal.getPosition();
         removeAnimal(animal);
 
         animal.move();
@@ -67,8 +66,12 @@ public class GlobeMap extends AbstractWorldMap {
 
             Genome genome = new Genome(parameters, randomGenes);
 
+            Herbivore herbivore = new Herbivore(parameters, randomDirection, animalPosition, genome);
+
+            herbivore.setEnergy();
+
             try {
-                place(new Herbivore(parameters, randomDirection, animalPosition, genome));
+                place(herbivore);
             } catch (IncorrectPositionException e) {
                 System.out.println(e.getMessage());
             }
@@ -87,8 +90,10 @@ public class GlobeMap extends AbstractWorldMap {
 
             Genome genome = new Genome(parameters, randomGenes);
 
+            Parasite parasite = new Parasite(parameters, randomDirection, parasitePosition, genome);
+            parasite.setEnergy();
             try {
-                place(new Parasite(parameters, randomDirection, parasitePosition, genome));
+                place(parasite);
             } catch (IncorrectPositionException e) {
                 System.out.println(e.getMessage());
             }
@@ -191,38 +196,28 @@ public class GlobeMap extends AbstractWorldMap {
         }
     }
 
-    private List<Animal> handleBreeding(List<Animal> animals) {
-        List<Animal> newbornsAtPos = new ArrayList<>();
+    private <T extends Animal> List<Animal> handleBreeding(List<T> speciesList) {
+        List<Animal> newChildren = new ArrayList<>();
+        Set<T> alreadyBred = new HashSet<>();
 
-        List<Herbivore> herbivores = animals.stream().
-                filter(a -> a instanceof Herbivore).
-                map(a -> (Herbivore) a).toList();
-        List<Parasite> parasites = animals.stream().
-                filter(a -> a instanceof Parasite).
-                map(a -> (Parasite) a).toList();
+        for (int i = 0; i < speciesList.size(); i++) {
+            T parent1 = speciesList.get(i);
 
-        for (int i = 0; i < herbivores.size() - 1; i += 2) {
-            Herbivore h1 = herbivores.get(i);
-            Herbivore h2 = herbivores.get(i + 1);
-            if (h1.canReproduce(h2)) {
-                try {
-                    newbornsAtPos.add(h1.reproduce(h2));
-                } catch (Exception ignored) {
+            if (alreadyBred.contains(parent1)) continue;
+
+            for (int j = i + 1; j < speciesList.size(); j++) {
+                T parent2 = speciesList.get(j);
+
+                if (alreadyBred.contains(parent2)) continue;
+
+                if (parent1.canReproduce(parent2)) {
+                    newChildren.add(parent1.reproduce(parent2));
+                    alreadyBred.add(parent1);
+                    alreadyBred.add(parent2);
                 }
             }
         }
-
-        for (int i = 0; i < parasites.size() - 1; i += 2) {
-            Parasite p1 = parasites.get(i);
-            Parasite p2 = parasites.get(i + 1);
-            if (p1.canReproduce(p2)) {
-                try {
-                    newbornsAtPos.add(p1.reproduce(p2));
-                } catch (Exception ignored) {
-                }
-            }
-        }
-        return newbornsAtPos;
+        return newChildren;
     }
 
 

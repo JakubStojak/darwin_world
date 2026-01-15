@@ -17,6 +17,7 @@ public record Parameters(
      int maximumMutations,
 
      int genomeLength,
+     int startParasiteEnergy,
      int startParasiteNumber,
      int hostEnergyLossPerParasite,
      int energyLossForParasiteWithoutHost
