@@ -47,7 +47,7 @@ public class GlobeMap extends AbstractWorldMap {
             System.out.println(e.getMessage());
         }
 
-        mapChanged("Animal was moved from position: " + oldPosition + " to position: " + animal.getPosition());
+
     }
 
     @Override
@@ -138,6 +138,7 @@ public class GlobeMap extends AbstractWorldMap {
 
     private void handleEnergyLoss(List<Animal> ordered) {
         for (Animal animal : ordered) {
+            animal.age++;
             if (animal instanceof Herbivore) {
                 ((Herbivore) animal).loseEnergyForDay();
             } else if (animal instanceof Parasite) {
@@ -258,6 +259,8 @@ public class GlobeMap extends AbstractWorldMap {
         for (Animal animal : allAnimals) {
             if (animal.isDead()) {
                 animal.setDeathDate(currentDate);
+                this.deadAnimalsCount++;
+                this.totalDeadAnimalsLifespan += animal.getAge();
 
                 if (animal instanceof Herbivore herbivore) {
                     herbivore.getParasites().forEach(Parasite::panic);

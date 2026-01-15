@@ -6,6 +6,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
@@ -19,11 +21,29 @@
     </center>
 
     <bottom>
-        <VBox alignment="CENTER" spacing="10" style="-fx-padding: 20;">
-            <Label fx:id="infoLabel" text="Symulacja działa..."/>
+        <VBox alignment="CENTER" spacing="10" style="-fx-padding: 10; -fx-border-color: lightgray; -fx-border-width: 1 0 0 0;">
+
             <HBox alignment="CENTER" spacing="20">
                 <Button text="Pauza" onAction="#onPauseClicked"/>
                 <Button text="Wznów" onAction="#onResumeClicked"/>
+                <Label fx:id="infoLabel" text="Symulacja działa..." textFill="grey"/>
+            </HBox>
+
+            <HBox alignment="CENTER" spacing="20" prefHeight="250">
+
+                <Label fx:id="statsLabel" text="Czekam na dane..."
+                       style="-fx-font-family: 'Monospaced'; -fx-font-size: 12px;"
+                       minWidth="220" wrapText="true"/>
+
+                <LineChart fx:id="statChart" createSymbols="false" HBox.hgrow="ALWAYS">
+                    <xAxis>
+                        <NumberAxis label="Dzień" autoRanging="true" forceZeroInRange="false"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis label="Wartość" autoRanging="true"/>
+                    </yAxis>
+                </LineChart>
+
             </HBox>
         </VBox>
     </bottom>
