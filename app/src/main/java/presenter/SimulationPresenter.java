@@ -4,12 +4,16 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import model.*;
 import util.Boundary;
 import util.Parameters;
+import util.StatType;
+import util.Statistics;
 
 import java.util.List;
 
@@ -17,18 +21,35 @@ public class SimulationPresenter implements MapChangeListener {
 
     @FXML private Canvas mapGrid;
     @FXML private Label infoLabel;
+    @FXML private Label statsLabel;
+    @FXML private LineChart<Number, Number> statChart;
 
     private WorldMap map;
     private Simulation simulation;
+    private Parameters parameters;
     private static final double CELL_SIZE = 30.0;
 
+    private StatType trackedStat;
+    private XYChart.Series<Number, Number> series;
+    private int dayCounter = 0;
+
+    public void setTrackedStat(StatType statType) {
+        this.trackedStat = statType;
+    }
+
     public void startSimulation(Parameters params) {
+        this.parameters = params;
         this.simulation = new Simulation(params);
         this.map = simulation.getMap();
 
         if (this.map instanceof AbstractWorldMap abstractMap) {
             abstractMap.registerObserver(this);
         }
+
+        series = new XYChart.Series<>();
+        series.setName(trackedStat.toString());
+        statChart.getData().add(series);
+        statChart.setAnimated(false);
 
         drawMap(map);
 
@@ -41,6 +62,7 @@ public class SimulationPresenter implements MapChangeListener {
     public void mapChanged(WorldMap worldMap, String message) {
         Platform.runLater(() -> {
             drawMap(worldMap);
+            updateStatistics(worldMap);
             if ("GAME OVER".equals(message)) {
                 infoLabel.setText("Koniec symulacji.");
                 showGameOverAlert();
@@ -104,10 +126,7 @@ public class SimulationPresenter implements MapChangeListener {
                     List<Animal> animals = abstractMap.getAnimalsAt(position);
                     if (!animals.isEmpty()) {
                         Animal animal = animals.get(0);
-                        if (animal instanceof Herbivore) gc.setFill(Color.BLUE);
-                        else if (animal instanceof Parasite) gc.setFill(Color.RED);
-                        else gc.setFill(Color.ORANGE);
-                        gc.fillOval(drawX, drawY, CELL_SIZE, CELL_SIZE);
+                        drawAnimalWithEnergyBar(gc, animal, drawX, drawY);
                     }
                 }
             }
@@ -120,6 +139,87 @@ public class SimulationPresenter implements MapChangeListener {
         }
         for (int y = 0; y <= (maxY - minY + 1); y++) {
             gc.strokeLine(0, y * CELL_SIZE, width, y * CELL_SIZE);
+        }
+    }
+
+    private void drawAnimalWithEnergyBar(GraphicsContext gc, Animal animal, double x, double y) {
+        double animalSize = CELL_SIZE * 0.6;
+        double barWidth = CELL_SIZE * 0.8;
+        double barHeight = 4.0;
+
+        double dotOffset = (CELL_SIZE - animalSize) / 2;
+        double barOffsetX = (CELL_SIZE - barWidth) /2;
+
+        double dotDrawY = y + dotOffset - 3;
+
+        if (animal instanceof Herbivore) gc.setFill(Color.BLUE);
+        else if (animal instanceof Parasite) gc.setFill(Color.RED);
+        else gc.setFill(Color.ORANGE);
+
+        gc.fillOval(x + dotOffset, dotDrawY, animalSize, animalSize);
+
+        double maxEnergy = parameters.startAnimalEnergy();
+        double energyPercentage = (double) animal.getEnergy() / maxEnergy;
+        energyPercentage = Math.min(1.0, Math.max(0.0, energyPercentage));
+
+        double filledWidth = barWidth * energyPercentage;
+
+        double barDrawY = y + CELL_SIZE - 6;
+
+        gc.setFill(Color.DARKGRAY);
+        gc.fillRect(x + barOffsetX, barDrawY, barWidth, barHeight);
+
+        if (energyPercentage > 0.7) gc.setFill(Color.LIMEGREEN);
+        else if (energyPercentage > 0.3) gc.setFill(Color.YELLOW);
+        else gc.setFill(Color.RED);
+
+        gc.fillRect(x + barOffsetX, barDrawY, filledWidth, barHeight);
+
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(0.5);
+        gc.strokeRect(x + barOffsetX, barDrawY, barWidth, barHeight);
+    }
+
+    public void stopSimulation() {
+        if (simulation != null) {
+            simulation.stop();
+        }
+    }
+
+    private void updateStatistics(WorldMap worldMap) {
+        if (worldMap instanceof AbstractWorldMap abstractMap) {
+            Statistics stats = abstractMap.getStatistics();
+            dayCounter++;
+
+
+            String statsText = String.format("""
+                Zwierzaki: %d
+                Rośliny: %d
+                Wolne pola: %d
+                Śr. energia: %.2f
+                Śr. dł. życia (martwe): %.2f
+                Śr. dzieci: %.2f
+                """,
+                    stats.animalCount(),
+                    stats.plantCount(),
+                    stats.freeFieldsCount(),
+                    stats.averageEnergy(),
+                    stats.averageLifespan(),
+                    stats.averageChildren()
+            );
+            statsLabel.setText(statsText);
+
+
+            double valueToShow = switch (trackedStat) {
+                case ANIMAL_COUNT -> stats.animalCount();
+                case PLANT_COUNT -> stats.plantCount();
+                case FREE_FIELDS -> stats.freeFieldsCount();
+                case AVG_ENERGY -> stats.averageEnergy();
+                case AVG_LIFESPAN -> stats.averageLifespan();
+                case AVG_CHILDREN -> stats.averageChildren();
+            };
+
+            series.getData().add(new XYChart.Data<>(dayCounter, valueToShow));
         }
     }
 }

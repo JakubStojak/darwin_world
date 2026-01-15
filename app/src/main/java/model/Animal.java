@@ -111,5 +111,9 @@ public abstract class Animal implements WorldElement {
     public void loseEnergyForBreed() {
         this.energy -= params.saturationEnergy();
     }
+
+    public void increaseChildrenCount() {
+        this.childrenCount++;
+    }
 }
 

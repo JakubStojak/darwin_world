@@ -3,33 +3,56 @@ package presenter;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import util.Parameters;
+import util.StatType;
 
 import java.io.IOException;
 
 public class StartPresenter {
 
-    @FXML private TextField mapHeightField;
-    @FXML private TextField mapWidthField;
-    @FXML private TextField startGrassNumberField;
-    @FXML private TextField energyPerGrassField;
-    @FXML private TextField newGrassPerDayField;
-    @FXML private TextField startAnimalEnergyField;
-    @FXML private TextField startAnimalNumberField;
-    @FXML private TextField energyLossPerDayField;
-    @FXML private TextField saturationEnergyField;
-    @FXML private TextField minimumMutationsField;
-    @FXML private TextField maximumMutationsField;
-    @FXML private TextField genomeLengthField;
-    @FXML private TextField startParasiteNumberField;
-    @FXML private TextField hostEnergyLossPerParasiteField;
-    @FXML private TextField energyLossForParasiteWithoutHostField;
+    @FXML
+    private TextField mapHeightField;
+    @FXML
+    private TextField mapWidthField;
+    @FXML
+    private TextField startGrassNumberField;
+    @FXML
+    private TextField energyPerGrassField;
+    @FXML
+    private TextField newGrassPerDayField;
+    @FXML
+    private TextField startAnimalEnergyField;
+    @FXML
+    private TextField startAnimalNumberField;
+    @FXML
+    private TextField energyLossPerDayField;
+    @FXML
+    private TextField saturationEnergyField;
+    @FXML
+    private TextField minimumMutationsField;
+    @FXML
+    private TextField maximumMutationsField;
+    @FXML
+    private TextField genomeLengthField;
+    @FXML
+    private TextField startParasiteNumberField;
+    @FXML
+    private TextField hostEnergyLossPerParasiteField;
+    @FXML
+    private TextField energyLossForParasiteWithoutHostField;
+    @FXML
+    private CheckBox parasitesCheckBox;
+    @FXML
+    private ComboBox<StatType> statTypeComboBox;
 
-    @FXML private Label errorLabel;
+    @FXML
+    private Label errorLabel;
 
     @FXML
     public void initialize() {
@@ -48,6 +71,20 @@ public class StartPresenter {
         startParasiteNumberField.setText("4");
         hostEnergyLossPerParasiteField.setText("1");
         energyLossForParasiteWithoutHostField.setText("1");
+
+        parasitesCheckBox.setSelected(true);
+        parasitesCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            toggleParasiteFields(newValue);
+        });
+
+        statTypeComboBox.getItems().setAll(StatType.values());
+        statTypeComboBox.getSelectionModel().selectFirst();
+    }
+
+    private void toggleParasiteFields(boolean isEnabled) {
+        startParasiteNumberField.setDisable(!isEnabled);
+        hostEnergyLossPerParasiteField.setDisable(!isEnabled);
+        energyLossForParasiteWithoutHostField.setDisable(!isEnabled);
     }
 
     @FXML
@@ -55,6 +92,7 @@ public class StartPresenter {
         try {
             errorLabel.setText("");
             Parameters params = getParametersFromFields();
+            StatType selectedStat = statTypeComboBox.getValue();
 
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
@@ -62,11 +100,15 @@ public class StartPresenter {
 
             SimulationPresenter presenter = loader.getController();
 
+            presenter.setTrackedStat(selectedStat);
             presenter.startSimulation(params);
 
             Stage stage = new Stage();
             stage.setTitle("Symulacja " + params.mapWidth() + "x" + params.mapHeight());
             stage.setScene(new Scene(viewRoot));
+            stage.setOnCloseRequest(event -> {
+                presenter.stopSimulation();
+            });
             stage.show();
 
         } catch (IOException e) {
@@ -79,23 +121,38 @@ public class StartPresenter {
 
     private Parameters getParametersFromFields() {
         try {
+            int height = Integer.parseInt(mapHeightField.getText());
+            int width = Integer.parseInt(mapWidthField.getText());
+            int startGrass = Integer.parseInt(startGrassNumberField.getText());
+            int energyGrass = Integer.parseInt(energyPerGrassField.getText());
+            int newGrass = Integer.parseInt(newGrassPerDayField.getText());
+            int startEnergy = Integer.parseInt(startAnimalEnergyField.getText());
+            int startAnimals = Integer.parseInt(startAnimalNumberField.getText());
+            int lossDay = Integer.parseInt(energyLossPerDayField.getText());
+            int saturation = Integer.parseInt(saturationEnergyField.getText());
+            int minMut = Integer.parseInt(minimumMutationsField.getText());
+            int maxMut = Integer.parseInt(maximumMutationsField.getText());
+            int genomeLen = Integer.parseInt(genomeLengthField.getText());
+
+            int startParasites = 0;
+            int hostLoss = 0;
+            int parasiteLoss = 0;
+
+            if (parasitesCheckBox.isSelected()) {
+                startParasites = Integer.parseInt(startParasiteNumberField.getText());
+                hostLoss = Integer.parseInt(hostEnergyLossPerParasiteField.getText());
+                parasiteLoss = Integer.parseInt(energyLossForParasiteWithoutHostField.getText());
+            }
+
             return new Parameters(
-                    Integer.parseInt(mapHeightField.getText()),
-                    Integer.parseInt(mapWidthField.getText()),
-                    Integer.parseInt(startGrassNumberField.getText()),
-                    Integer.parseInt(energyPerGrassField.getText()),
-                    Integer.parseInt(newGrassPerDayField.getText()),
-                    Integer.parseInt(startAnimalEnergyField.getText()),
-                    Integer.parseInt(startAnimalNumberField.getText()),
-                    Integer.parseInt(energyLossPerDayField.getText()),
-                    Integer.parseInt(saturationEnergyField.getText()),
-                    Integer.parseInt(minimumMutationsField.getText()),
-                    Integer.parseInt(maximumMutationsField.getText()),
-                    Integer.parseInt(genomeLengthField.getText()),
-                    Integer.parseInt(startParasiteNumberField.getText()),
-                    Integer.parseInt(hostEnergyLossPerParasiteField.getText()),
-                    Integer.parseInt(energyLossForParasiteWithoutHostField.getText())
+                    height, width, startGrass, energyGrass, newGrass,
+                    startEnergy, startAnimals, lossDay, saturation,
+                    minMut, maxMut, genomeLen,
+                    startParasites,
+                    hostLoss,
+                    parasiteLoss
             );
+
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Wszystkie pola muszą być liczbami!");
         }

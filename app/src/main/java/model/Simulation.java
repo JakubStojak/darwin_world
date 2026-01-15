@@ -26,7 +26,6 @@ public class Simulation implements Runnable {
         return map;
     }
 
-    // W metodzie run() w klasie Simulation:
 
     @Override
     public void run() {
@@ -49,9 +48,6 @@ public class Simulation implements Runnable {
                     break;
                 }
 
-                if (map.getAnimalCount() > 0) {
-                    map.mapChanged("Dzień: " + dayCount);
-                }
 
                 Thread.sleep(200);
             } catch (InterruptedException e) {

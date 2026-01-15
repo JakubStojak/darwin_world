@@ -58,6 +58,8 @@ public class Parasite extends Animal {
         Genome childGenome = this.getGenome().createChildGenome(this, other);
         this.loseEnergyForBreed();
         other.loseEnergyForBreed();
+        this.increaseChildrenCount();
+        other.increaseChildrenCount();
         return new Parasite(params, fromInt(childGenome.getMove()), this.getPosition(), childGenome);
     }
 }

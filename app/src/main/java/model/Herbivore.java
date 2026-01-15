@@ -19,6 +19,8 @@ public class Herbivore extends Animal {
         Genome childGenome = this.getGenome().createChildGenome(this, other);
         this.loseEnergyForBreed();
         other.loseEnergyForBreed();
+        this.increaseChildrenCount();
+        other.increaseChildrenCount();
         return new Herbivore(params, MapDirection.fromInt(childGenome.getMove()), this.getPosition(), childGenome);
     }
 

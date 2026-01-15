@@ -8,6 +8,8 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.geometry.Insets?>
 
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
 <ScrollPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fitToWidth="true"
@@ -70,6 +72,8 @@
             </GridPane>
 
             <Label text="Pasożyty" style="-fx-font-weight: bold; -fx-text-fill: #c0392b;"/>
+
+            <CheckBox fx:id="parasitesCheckBox" text="Włącz pasożyty" selected="true"/>
             <GridPane hgap="5" vgap="5" alignment="CENTER">
                 <Label text="Startowa ilość:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
                 <TextField fx:id="startParasiteNumberField" GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="60"/>
@@ -83,6 +87,8 @@
 
             <Label fx:id="errorLabel" textFill="RED" wrapText="true"/>
 
+            <Label text="Wybierz statystykę do wykresu:" />
+            <ComboBox fx:id="statTypeComboBox" prefWidth="200.0" />
             <Button text="URUCHOM NOWĄ SYMULACJĘ" onAction="#onSimulationStartClicked"
                     style="-fx-font-size: 14px; -fx-background-color: lightgreen; -fx-padding: 10 20;"/>
         </VBox>
