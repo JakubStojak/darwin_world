@@ -211,10 +211,6 @@ public abstract class AbstractWorldMap implements WorldMap {
             }
         }
 
-        // ... po pętli grupującej
-        System.out.println("Liczba grup: " + families.size() + " | Wielkość największej: " +
-                families.values().stream().mapToInt(List::size).max().orElse(0));
-
         return families.values().stream()
                 .max(Comparator.comparingInt(List::size))
                 .orElse(Collections.emptyList());

@@ -59,10 +59,10 @@ public class Simulation implements Runnable {
 
     private void simulateDay() {
         dayCount++;
+        map.removeDeadAnimals(dayCount);
         map.moveAllAnimals();
         map.animalInteractions();
         map.growPlants(parameters.newGrassPerDay());
-        map.removeDeadAnimals(dayCount);
         map.mapChanged("Dzień: " + dayCount);
     }
 
