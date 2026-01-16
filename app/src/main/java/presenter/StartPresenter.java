@@ -150,6 +150,34 @@ public class StartPresenter {
                 startParasiteEnergy = Integer.parseInt(startParasiteEnergyField.getText());
             }
 
+            if (height <= 0 || width <= 0) {
+                throw new IllegalArgumentException("Wymiary mapy muszą być dodatnie!");
+            }
+            if (genomeLen <= 0 || minMut < 0 || maxMut <= 0) {
+                throw new IllegalArgumentException("Ujemne wartości w genomie!");
+            }
+            if (minMut > maxMut) {
+                throw new IllegalArgumentException("Minimalna liczba mutacji nie może być większa od maksymalnej!");
+            }
+            if (maxMut > genomeLen) {
+                throw new IllegalArgumentException("Liczba mutacji nie może przekraczać długości genomu!");
+            }
+            if (startEnergy <= 0 || startParasiteEnergy <= 0) {
+                throw new IllegalArgumentException("Liczba energii startu musi być większa od 0!");
+            }
+            if (saturation <= 0) {
+                throw new IllegalArgumentException("Energia saturacji być większa od 0!");
+            }
+            if (startAnimals + startParasites > width * height) {
+                throw new IllegalArgumentException("Więcej zwierzaków niż miejsca!");
+            }
+            if (startAnimals < 0 || startGrass < 0) {
+                throw new IllegalArgumentException("Liczba obiektów nie może być ujemna!");
+            }
+            if (energyGrass <= 0 || hostLoss <= 0 || parasiteLoss <= 0) {
+                throw new IllegalArgumentException("Energie dodane i stracone nie mogą być ujemne!");
+            }
+
             return new Parameters(
                     height, width, startGrass, energyGrass, newGrass,
                     startEnergy, startAnimals, lossDay, saturation,

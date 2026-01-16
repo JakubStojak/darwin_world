@@ -27,16 +27,32 @@ public class Herbivore extends Animal {
 
     @Override
     public void move() {
-        MapDirection moveDirection = MapDirection.fromInt(this.getGenome().getMove());
-        this.genome.next();
-        Vector2d newPosition = this.position.add(moveDirection.toUnitVector());
-        this.setPosition(newPosition);
+        if (isInfected()) {
+            Random random = new Random();
+            int chanceToMove = random.nextInt(parasites.size());
+            if (chanceToMove == 0) {
+                MapDirection moveDirection = MapDirection.fromInt(this.getGenome().getMove());
+                this.genome.next();
+                Vector2d newPosition = this.position.add(moveDirection.toUnitVector());
+                this.setPosition(newPosition);
+            }
+        }
+        else {
+            MapDirection moveDirection = MapDirection.fromInt(this.getGenome().getMove());
+            this.genome.next();
+            Vector2d newPosition = this.position.add(moveDirection.toUnitVector());
+            this.setPosition(newPosition);
+        }
     }
 
     public void addParasite(Parasite parasite) {
         if (!parasites.contains(parasite)) {
             this.parasites.add(parasite);
         }
+    }
+
+    public boolean isInfected() {
+        return !parasites.isEmpty();
     }
 
     public void removeParasite(Parasite parasite) {

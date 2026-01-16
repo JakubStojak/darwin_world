@@ -15,7 +15,7 @@ import util.Parameters;
 import util.StatType;
 import util.Statistics;
 
-import java.util.List;
+import java.util.*;
 
 public class SimulationPresenter implements MapChangeListener {
 
@@ -24,7 +24,6 @@ public class SimulationPresenter implements MapChangeListener {
     @FXML private Label statsLabel;
     @FXML private LineChart<Number, Number> statChart;
 
-    private WorldMap map;
     private Simulation simulation;
     private Parameters parameters;
     private static final double CELL_SIZE = 30.0;
@@ -32,6 +31,9 @@ public class SimulationPresenter implements MapChangeListener {
     private StatType trackedStat;
     private XYChart.Series<Number, Number> series;
     private int dayCounter = 0;
+    private Set<Animal> dominantAnimals = new HashSet<>();
+    private Set<Vector2d> dominantPositions = new HashSet<>();
+    private final float GENOME_PERCENTAGE = 0.7F;
 
     public void setTrackedStat(StatType statType) {
         this.trackedStat = statType;
@@ -40,9 +42,9 @@ public class SimulationPresenter implements MapChangeListener {
     public void startSimulation(Parameters params) {
         this.parameters = params;
         this.simulation = new Simulation(params);
-        this.map = simulation.getMap();
+        WorldMap map = simulation.getMap();
 
-        AbstractWorldMap abstractMap = (AbstractWorldMap) this.map;
+        AbstractWorldMap abstractMap = (AbstractWorldMap) map;
         abstractMap.registerObserver(this);
 
         series = new XYChart.Series<>();
@@ -61,6 +63,10 @@ public class SimulationPresenter implements MapChangeListener {
     public void mapChanged(WorldMap worldMap, String message) {
         Platform.runLater(() -> {
             drawMap(worldMap);
+            if (worldMap instanceof AbstractWorldMap abstractMap) {
+                this.dominantAnimals = new HashSet<>(abstractMap.getDominantFamilyGroup(GENOME_PERCENTAGE));
+                this.dominantPositions = new HashSet<>(abstractMap.getDominantPositions());
+            }
             updateStatistics(worldMap);
             if ("GAME OVER".equals(message)) {
                 infoLabel.setText("Koniec symulacji.");
@@ -119,13 +125,21 @@ public class SimulationPresenter implements MapChangeListener {
                 if (map.isOccupiedByPlant(position)) {
                     gc.setFill(Color.FORESTGREEN);
                     gc.fillRect(drawX, drawY, CELL_SIZE, CELL_SIZE);
+                    if (dominantPositions.contains(position)) {
+                        gc.setStroke(Color.GOLD);
+                        gc.setLineWidth(3.0);
+                        gc.strokeRect(drawX + 1.5, drawY + 1.5, CELL_SIZE - 3, CELL_SIZE - 3);
+                    }
                 }
 
                 if (map instanceof AbstractWorldMap abstractMap) {
-                    List<Animal> animals = abstractMap.getAnimalsAt(position);
-                    if (!animals.isEmpty()) {
-                        Animal animal = animals.get(0);
-                        drawAnimalWithEnergyBar(gc, animal, drawX, drawY);
+                    List<Animal> animalsAtPos = abstractMap.getAnimalsAt(position);
+                    if (!animalsAtPos.isEmpty()) {
+                        Animal animalToDraw = animalsAtPos.get(0);
+
+                        boolean isDominant = dominantAnimals.contains(animalToDraw);
+
+                        drawAnimalWithEnergyBar(gc, animalToDraw, drawX, drawY, isDominant);
                     }
                 }
             }
@@ -141,7 +155,7 @@ public class SimulationPresenter implements MapChangeListener {
         }
     }
 
-    private void drawAnimalWithEnergyBar(GraphicsContext gc, Animal animal, double x, double y) {
+    private void drawAnimalWithEnergyBar(GraphicsContext gc, Animal animal, double x, double y, boolean isDominant) {
         double animalSize = CELL_SIZE * 0.6;
         double barWidth = CELL_SIZE * 0.8;
         double barHeight = 4.0;
@@ -150,6 +164,12 @@ public class SimulationPresenter implements MapChangeListener {
         double barOffsetX = (CELL_SIZE - barWidth) /2;
 
         double dotDrawY = y + dotOffset - 3;
+
+        if (isDominant) {
+            gc.setStroke(Color.PURPLE);
+            gc.setLineWidth(3.0);
+            gc.strokeOval(x + dotOffset - 2, dotDrawY - 2, animalSize + 4, animalSize + 4);
+        }
 
         if (animal instanceof Herbivore) gc.setFill(Color.BLUE);
         else if (animal instanceof Parasite) gc.setFill(Color.RED);

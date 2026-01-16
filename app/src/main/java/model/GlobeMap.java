@@ -19,8 +19,6 @@ public class GlobeMap extends AbstractWorldMap {
 
         removeAnimal(animal);
 
-        animal.move();
-
         if (animal instanceof Parasite parasite && parasite.hasHost()) {
             Vector2d hostPos = parasite.getHost().getPosition();
             Vector2d targetPos = hostPos;
@@ -37,6 +35,7 @@ public class GlobeMap extends AbstractWorldMap {
             }
             animal.setPosition(targetPos);
         } else {
+            animal.move();
             animal.setPosition(validatePosition(animal.getPosition(), animal));
         }
 

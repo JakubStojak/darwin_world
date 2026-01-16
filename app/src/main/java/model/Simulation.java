@@ -49,7 +49,7 @@ public class Simulation implements Runnable {
                 }
 
 
-                Thread.sleep(200);
+                Thread.sleep(SIMULATION_DELAY);
             } catch (InterruptedException e) {
                 System.out.println("Symulacja przerwana");
                 break;
@@ -59,10 +59,10 @@ public class Simulation implements Runnable {
 
     private void simulateDay() {
         dayCount++;
-        map.removeDeadAnimals(dayCount);
         map.moveAllAnimals();
         map.animalInteractions();
         map.growPlants(parameters.newGrassPerDay());
+        map.removeDeadAnimals(dayCount);
         map.mapChanged("Dzień: " + dayCount);
     }
 

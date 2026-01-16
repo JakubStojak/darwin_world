@@ -77,4 +77,14 @@ public class Genome {
         return childGenome;
     }
 
+    public int calculateDistance(Genome other) {
+        int distance = 0;
+        for (int i = 0; i < this.genes.size(); i++) {
+            if (!this.genes.get(i).equals(other.getGeneAtIndex(i))) {
+                distance++;
+            }
+        }
+        return distance;
+    }
+
 }
