@@ -171,7 +171,14 @@ public abstract class AbstractWorldMap implements WorldMap {
         double avgLifespan = deadAnimalsCount > 0 ? totalDeadAnimalsLifespan / deadAnimalsCount : 0;
         double avgChildren = allAnimals.stream().mapToInt(Animal::getChildrenCount).average().orElse(0);
 
-        return new Statistics(animalCount, plantCount, freeFields, avgEnergy, avgLifespan, avgChildren);
+        List<Animal> dominantFamily = getDominantFamilyGroup(0.7);
+
+        String topGenotype = "-";
+        if (!dominantFamily.isEmpty()) {
+            topGenotype = dominantFamily.get(0).getGenome().toString();
+        }
+
+        return new Statistics(animalCount, plantCount, freeFields, avgEnergy, avgLifespan, avgChildren, topGenotype);
     }
 
     public List<Animal> getDominantFamilyGroup(double percentage) {

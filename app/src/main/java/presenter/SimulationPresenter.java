@@ -19,14 +19,17 @@ import java.util.*;
 
 public class SimulationPresenter implements MapChangeListener {
 
-    @FXML private Canvas mapGrid;
-    @FXML private Label infoLabel;
-    @FXML private Label statsLabel;
-    @FXML private LineChart<Number, Number> statChart;
+    @FXML
+    private Canvas mapGrid;
+    @FXML
+    private Label infoLabel;
+    @FXML
+    private Label statsLabel;
+    @FXML
+    private LineChart<Number, Number> statChart;
 
     private Simulation simulation;
     private Parameters parameters;
-    private static final double CELL_SIZE = 30.0;
 
     private StatType trackedStat;
     private XYChart.Series<Number, Number> series;
@@ -46,6 +49,9 @@ public class SimulationPresenter implements MapChangeListener {
 
         AbstractWorldMap abstractMap = (AbstractWorldMap) map;
         abstractMap.registerObserver(this);
+
+        CsvStatsLogger csvLogger = new CsvStatsLogger(abstractMap.getId().toString());
+        abstractMap.registerObserver(csvLogger);
 
         series = new XYChart.Series<>();
         series.setName(trackedStat.toString());
@@ -103,13 +109,15 @@ public class SimulationPresenter implements MapChangeListener {
         if (map == null) return;
 
         Boundary bounds = map.getCurrentBounds();
-        double width = (bounds.upperRight().getX() - bounds.lowerLeft().getX() + 1) * CELL_SIZE;
-        double height = (bounds.upperRight().getY() - bounds.lowerLeft().getY() + 1) * CELL_SIZE;
-        mapGrid.setWidth(width);
-        mapGrid.setHeight(height);
+        double gridWidth = (bounds.upperRight().getX() - bounds.lowerLeft().getX() + 1);
+        double gridHeight = (bounds.upperRight().getY() - bounds.lowerLeft().getY() + 1);
+        double canvasWidth = mapGrid.getWidth();
+        double canvasHeight = mapGrid.getHeight();
+
+        double cellSize = Math.min(canvasWidth / gridWidth, canvasHeight / gridHeight);
 
         gc.setFill(Color.WHITESMOKE);
-        gc.fillRect(0, 0, width, height);
+        gc.fillRect(0, 0, gridWidth * cellSize, gridHeight * cellSize);
 
         int minX = bounds.lowerLeft().getX();
         int maxX = bounds.upperRight().getX();
@@ -119,16 +127,16 @@ public class SimulationPresenter implements MapChangeListener {
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 Vector2d position = new Vector2d(x, y);
-                double drawX = (x - minX) * CELL_SIZE;
-                double drawY = (maxY - y) * CELL_SIZE;
+                double drawX = (x - minX) * cellSize;
+                double drawY = (maxY - y) * cellSize;
 
                 if (map.isOccupiedByPlant(position)) {
                     gc.setFill(Color.FORESTGREEN);
-                    gc.fillRect(drawX, drawY, CELL_SIZE, CELL_SIZE);
+                    gc.fillRect(drawX, drawY, cellSize, cellSize);
                     if (dominantPositions.contains(position)) {
                         gc.setStroke(Color.GOLD);
                         gc.setLineWidth(3.0);
-                        gc.strokeRect(drawX + 1.5, drawY + 1.5, CELL_SIZE - 3, CELL_SIZE - 3);
+                        gc.strokeRect(drawX + 1.5, drawY + 1.5, cellSize - 3, cellSize - 3);
                     }
                 }
 
@@ -139,7 +147,7 @@ public class SimulationPresenter implements MapChangeListener {
 
                         boolean isDominant = dominantAnimals.contains(animalToDraw);
 
-                        drawAnimalWithEnergyBar(gc, animalToDraw, drawX, drawY, isDominant);
+                        drawAnimalWithEnergyBar(gc, animalToDraw, drawX, drawY, cellSize, isDominant);
                     }
                 }
             }
@@ -148,26 +156,26 @@ public class SimulationPresenter implements MapChangeListener {
         gc.setStroke(Color.GRAY);
         gc.setLineWidth(0.5);
         for (int x = 0; x <= (maxX - minX + 1); x++) {
-            gc.strokeLine(x * CELL_SIZE, 0, x * CELL_SIZE, height);
+            gc.strokeLine(x * cellSize, 0, x * cellSize, gridHeight * cellSize);
         }
         for (int y = 0; y <= (maxY - minY + 1); y++) {
-            gc.strokeLine(0, y * CELL_SIZE, width, y * CELL_SIZE);
+            gc.strokeLine(0, y * cellSize, gridWidth * cellSize, y * cellSize);
         }
     }
 
-    private void drawAnimalWithEnergyBar(GraphicsContext gc, Animal animal, double x, double y, boolean isDominant) {
-        double animalSize = CELL_SIZE * 0.6;
-        double barWidth = CELL_SIZE * 0.8;
-        double barHeight = 4.0;
+    private void drawAnimalWithEnergyBar(GraphicsContext gc, Animal animal, double x, double y, double cellSize, boolean isDominant) {
+        double animalSize = cellSize * 0.6;
+        double barWidth = cellSize * 0.8;
+        double barHeight = cellSize * 0.15;
 
-        double dotOffset = (CELL_SIZE - animalSize) / 2;
-        double barOffsetX = (CELL_SIZE - barWidth) /2;
+        double dotOffset = (cellSize - animalSize) / 2;
+        double barOffsetX = (cellSize - barWidth) / 2;
 
         double dotDrawY = y + dotOffset - 3;
 
         if (isDominant) {
             gc.setStroke(Color.PURPLE);
-            gc.setLineWidth(3.0);
+            gc.setLineWidth(cellSize * 0.08);
             gc.strokeOval(x + dotOffset - 2, dotDrawY - 2, animalSize + 4, animalSize + 4);
         }
 
@@ -183,7 +191,7 @@ public class SimulationPresenter implements MapChangeListener {
 
         double filledWidth = barWidth * energyPercentage;
 
-        double barDrawY = y + CELL_SIZE - 6;
+        double barDrawY = y + cellSize - 6;
 
         gc.setFill(Color.DARKGRAY);
         gc.fillRect(x + barOffsetX, barDrawY, barWidth, barHeight);
@@ -212,16 +220,18 @@ public class SimulationPresenter implements MapChangeListener {
 
 
             String statsText = String.format("""
-                Zwierzaki: %d
-                Rośliny: %d
-                Wolne pola: %d
-                Śr. energia: %.2f
-                Śr. dł. życia (martwe): %.2f
-                Śr. dzieci: %.2f
-                """,
+                            Zwierzaki: %d
+                            Rośliny: %d
+                            Wolne pola: %d
+                            Genotyp: %s
+                            Śr. energia: %.2f
+                            Śr. dł. życia (martwe): %.2f
+                            Śr. dzieci: %.2f
+                            """,
                     stats.animalCount(),
                     stats.plantCount(),
                     stats.freeFieldsCount(),
+                    stats.topGenotype(),
                     stats.averageEnergy(),
                     stats.averageLifespan(),
                     stats.averageChildren()

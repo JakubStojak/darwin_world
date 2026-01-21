@@ -3,16 +3,15 @@ package presenter;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import model.ConfigManager;
 import util.Parameters;
 import util.StatType;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class StartPresenter {
 
@@ -57,6 +56,10 @@ public class StartPresenter {
     private Label errorLabel;
 
     @FXML
+    private ComboBox<String> configComboBox;
+    private final ConfigManager configManager = new ConfigManager();
+
+    @FXML
     public void initialize() {
         mapHeightField.setText("15");
         mapWidthField.setText("15");
@@ -82,6 +85,13 @@ public class StartPresenter {
 
         statTypeComboBox.getItems().setAll(StatType.values());
         statTypeComboBox.getSelectionModel().selectFirst();
+
+        refreshConfigList();
+    }
+
+    private void refreshConfigList() {
+        configComboBox.getItems().clear();
+        configComboBox.getItems().addAll(configManager.getAvailableConfigs());
     }
 
     private void toggleParasiteFields(boolean isEnabled) {
@@ -90,6 +100,79 @@ public class StartPresenter {
         hostEnergyLossPerParasiteField.setDisable(!isEnabled);
         energyLossForParasiteWithoutHostField.setDisable(!isEnabled);
     }
+
+
+    @FXML
+    public void onSaveConfigClicked() {
+        try {
+            Parameters currentParams = getParametersFromFields();
+            TextInputDialog dialog = new TextInputDialog("my_preset");
+            dialog.setTitle("Zapisz konfigurację");
+            dialog.setHeaderText("Zapisywanie ustawień");
+            dialog.setContentText("Podaj nazwę konfiguracji:");
+
+            Optional<String> result = dialog.showAndWait();
+            if (result.isPresent()) {
+                String name = result.get();
+                if (!name.trim().isEmpty()) {
+                    configManager.saveConfig(name, currentParams);
+                    refreshConfigList();
+                    configComboBox.getSelectionModel().select(name);
+                    errorLabel.setText("Zapisano: " + name);
+                    errorLabel.setStyle("-fx-text-fill: green;");
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            errorLabel.setText("Popraw dane przed zapisem: " + e.getMessage());
+            errorLabel.setStyle("-fx-text-fill: red;");
+        } catch (IOException e) {
+            errorLabel.setText("Błąd zapisu pliku: " + e.getMessage());
+            errorLabel.setStyle("-fx-text-fill: red;");
+        }
+    }
+
+    @FXML
+    public void onLoadConfigClicked() {
+        String selectedConfig = configComboBox.getValue();
+        if (selectedConfig == null) {
+            errorLabel.setText("Wybierz preset z listy!");
+            errorLabel.setStyle("-fx-text-fill: red;");
+            return;
+        }
+
+        try {
+            Parameters params = configManager.loadConfig(selectedConfig);
+            fillFieldsWithParameters(params);
+            errorLabel.setText("Wczytano: " + selectedConfig);
+            errorLabel.setStyle("-fx-text-fill: green;");
+        } catch (IOException e) {
+            errorLabel.setText("Błąd odczytu pliku: " + e.getMessage());
+            errorLabel.setStyle("-fx-text-fill: red;");
+        }
+    }
+
+    private void fillFieldsWithParameters(Parameters p) {
+        mapHeightField.setText(String.valueOf(p.mapHeight()));
+        mapWidthField.setText(String.valueOf(p.mapWidth()));
+        startGrassNumberField.setText(String.valueOf(p.startGrassNumber()));
+        energyPerGrassField.setText(String.valueOf(p.energyPerGrass()));
+        newGrassPerDayField.setText(String.valueOf(p.newGrassPerDay()));
+        startAnimalEnergyField.setText(String.valueOf(p.startAnimalEnergy()));
+        startAnimalNumberField.setText(String.valueOf(p.startAnimalNumber()));
+        energyLossPerDayField.setText(String.valueOf(p.energyLossPerDay()));
+        saturationEnergyField.setText(String.valueOf(p.saturationEnergy()));
+        minimumMutationsField.setText(String.valueOf(p.minimumMutations()));
+        maximumMutationsField.setText(String.valueOf(p.maximumMutations()));
+        genomeLengthField.setText(String.valueOf(p.genomeLength()));
+
+        startParasiteNumberField.setText(String.valueOf(p.startParasiteNumber()));
+        startParasiteEnergyField.setText(String.valueOf(p.startParasiteEnergy()));
+        hostEnergyLossPerParasiteField.setText(String.valueOf(p.hostEnergyLossPerParasite()));
+        energyLossForParasiteWithoutHostField.setText(String.valueOf(p.energyLossForParasiteWithoutHost()));
+
+        parasitesCheckBox.setSelected(p.startParasiteNumber() > 0);
+    }
+
 
     @FXML
     public void onSimulationStartClicked() {
@@ -150,32 +233,27 @@ public class StartPresenter {
                 startParasiteEnergy = Integer.parseInt(startParasiteEnergyField.getText());
             }
 
-            if (height <= 0 || width <= 0) {
-                throw new IllegalArgumentException("Wymiary mapy muszą być dodatnie!");
-            }
-            if (genomeLen <= 0 || minMut < 0 || maxMut <= 0) {
+            if (height <= 0 || width <= 0) throw new IllegalArgumentException("Wymiary mapy muszą być dodatnie!");
+            if (genomeLen <= 0 || minMut < 0 || maxMut < 0)
                 throw new IllegalArgumentException("Ujemne wartości w genomie!");
-            }
-            if (minMut > maxMut) {
-                throw new IllegalArgumentException("Minimalna liczba mutacji nie może być większa od maksymalnej!");
-            }
-            if (maxMut > genomeLen) {
-                throw new IllegalArgumentException("Liczba mutacji nie może przekraczać długości genomu!");
-            }
-            if (startEnergy <= 0 || startParasiteEnergy <= 0) {
-                throw new IllegalArgumentException("Liczba energii startu musi być większa od 0!");
-            }
-            if (saturation <= 0) {
-                throw new IllegalArgumentException("Energia saturacji być większa od 0!");
-            }
-            if (startAnimals + startParasites > width * height) {
-                throw new IllegalArgumentException("Więcej zwierzaków niż miejsca!");
-            }
-            if (startAnimals < 0 || startGrass < 0) {
-                throw new IllegalArgumentException("Liczba obiektów nie może być ujemna!");
-            }
-            if (energyGrass <= 0 || hostLoss <= 0 || parasiteLoss <= 0) {
-                throw new IllegalArgumentException("Energie dodane i stracone nie mogą być ujemne!");
+            if (minMut > maxMut) throw new IllegalArgumentException("Min mutacji nie może być większe od Max!");
+            if (maxMut > genomeLen)
+                throw new IllegalArgumentException("Max mutacji nie może być większe od dł. genomu!");
+            if (startEnergy <= 0) throw new IllegalArgumentException("Energia startowa zwierząt musi być > 0!");
+            if (saturation <= 0) throw new IllegalArgumentException("Energia nasycenia musi być > 0!");
+            if (startAnimals < 0 || startGrass < 0)
+                throw new IllegalArgumentException("Ilość obiektów nie może być ujemna!");
+
+            if (parasitesCheckBox.isSelected()) {
+                if (startParasiteEnergy <= 0)
+                    throw new IllegalArgumentException("Energia startowa pasożyta musi być > 0!");
+                if (startParasites <= 0) throw new IllegalArgumentException("Liczba pasożytów musi być > 0!");
+                if (hostLoss < 0 || parasiteLoss < 0)
+                    throw new IllegalArgumentException("Straty energii nie mogą być ujemne!");
+                if (startAnimals + startParasites > width * height)
+                    throw new IllegalArgumentException("Za dużo zwierząt i pasożytów na mapie!");
+            } else {
+                if (startAnimals > width * height) throw new IllegalArgumentException("Za dużo zwierząt na mapie!");
             }
 
             return new Parameters(
