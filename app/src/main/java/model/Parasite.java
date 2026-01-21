@@ -61,6 +61,8 @@ public class Parasite extends Animal {
         other.loseEnergyForBreed();
         this.increaseChildrenCount();
         other.increaseChildrenCount();
-        return new Parasite(params, fromInt(childGenome.getMove()), this.getPosition(), childGenome);
+        Parasite child = new Parasite(params, fromInt(childGenome.getMove()), this.getPosition(), childGenome);
+        child.setEnergy();
+        return child;
     }
 }

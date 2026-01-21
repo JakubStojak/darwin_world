@@ -7,5 +7,7 @@ public record Statistics(
         int freeFieldsCount,
         double averageEnergy,
         double averageLifespan,
-        double averageChildren
-) {}
+        double averageChildren,
+        String topGenotype
+) {
+}

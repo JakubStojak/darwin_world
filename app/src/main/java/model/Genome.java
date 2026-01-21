@@ -1,4 +1,5 @@
 package model;
+
 import util.Parameters;
 
 import java.util.ArrayList;
@@ -85,6 +86,11 @@ public class Genome {
             }
         }
         return distance;
+    }
+
+    @Override
+    public String toString() {
+        return genes.toString();
     }
 
 }
