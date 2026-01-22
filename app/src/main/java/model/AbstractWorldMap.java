@@ -29,10 +29,6 @@ public abstract class AbstractWorldMap implements WorldMap {
         observers.add(observer);
     }
 
-    public void deregisterObserver(MapChangeListener observer) {
-        observers.remove(observer);
-    }
-
     protected void mapChanged(String message) {
         for (MapChangeListener observer : observers) {
             observer.mapChanged(this, message);
@@ -42,12 +38,12 @@ public abstract class AbstractWorldMap implements WorldMap {
     @Override
     public void place(Animal animal) throws IncorrectPositionException {
         if (animal != null) {
-            Vector2d position = animal.getPosition();
+            Vector2d position = animal.position();
             if (canMoveTo(position)) {
                 animals.computeIfAbsent(position, pos -> Collections.synchronizedList(new ArrayList<>()))
                         .add(animal);
             } else {
-                throw new IncorrectPositionException(animal.getPosition());
+                throw new IncorrectPositionException(animal.position());
             }
         }
     }
@@ -62,13 +58,13 @@ public abstract class AbstractWorldMap implements WorldMap {
     @Override
     public void plant(Grass plant) throws IncorrectPositionException {
         if (plant != null) {
-            Vector2d position = plant.getPosition();
+            Vector2d position = plant.position();
             grassPositions.merge(position, 1, Integer::sum);
 
             if (canMoveTo(position)) {
                 plants.put(position, plant);
             } else {
-                throw new IncorrectPositionException(plant.getPosition());
+                throw new IncorrectPositionException(plant.position());
             }
         }
     }
@@ -85,7 +81,7 @@ public abstract class AbstractWorldMap implements WorldMap {
     @Override
     public void removeAnimal(Animal animal) {
         if (animal == null) return;
-        Vector2d position = animal.getPosition();
+        Vector2d position = animal.position();
 
         animals.compute(position, (key, list) -> {
             if (list != null) {
@@ -97,7 +93,7 @@ public abstract class AbstractWorldMap implements WorldMap {
     }
 
     public void removePlant(Grass plant) {
-        plants.remove(plant.getPosition());
+        plants.remove(plant.position());
     }
 
     @Override
@@ -234,7 +230,5 @@ public abstract class AbstractWorldMap implements WorldMap {
         int countToTake = Math.max(1, (int) (actualGrassFields * 0.1));
 
         return sortedPositions.subList(actualGrassFields - countToTake, actualGrassFields);
-
-
     }
 }

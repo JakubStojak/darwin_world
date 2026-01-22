@@ -45,13 +45,12 @@ public class SimulationPresenter implements MapChangeListener {
     public void startSimulation(Parameters params) {
         this.parameters = params;
         this.simulation = new Simulation(params);
-        WorldMap map = simulation.getMap();
+        AbstractWorldMap map = simulation.getMap();
 
-        AbstractWorldMap abstractMap = (AbstractWorldMap) map;
-        abstractMap.registerObserver(this);
+        map.registerObserver(this);
 
-        CsvStatsLogger csvLogger = new CsvStatsLogger(abstractMap.getId().toString());
-        abstractMap.registerObserver(csvLogger);
+        CsvStatsLogger csvLogger = new CsvStatsLogger(map.getId().toString());
+        map.registerObserver(csvLogger);
 
         series = new XYChart.Series<>();
         series.setName(trackedStat.toString());
@@ -96,7 +95,7 @@ public class SimulationPresenter implements MapChangeListener {
     private void showGameOverAlert() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Koniec");
-        alert.setHeaderText("Koniec gry");
+        alert.setHeaderText("Koniec symulacji");
         alert.setContentText("Brak zwierząt na mapie.");
         alert.showAndWait();
     }
@@ -135,7 +134,7 @@ public class SimulationPresenter implements MapChangeListener {
                     gc.fillRect(drawX, drawY, cellSize, cellSize);
                     if (dominantPositions.contains(position)) {
                         gc.setStroke(Color.GOLD);
-                        gc.setLineWidth(3.0);
+                        gc.setLineWidth(1);
                         gc.strokeRect(drawX + 1.5, drawY + 1.5, cellSize - 3, cellSize - 3);
                     }
                 }
@@ -143,7 +142,7 @@ public class SimulationPresenter implements MapChangeListener {
                 if (map instanceof AbstractWorldMap abstractMap) {
                     List<Animal> animalsAtPos = abstractMap.getAnimalsAt(position);
                     if (!animalsAtPos.isEmpty()) {
-                        Animal animalToDraw = animalsAtPos.get(0);
+                        Animal animalToDraw = animalsAtPos.getFirst();
 
                         boolean isDominant = dominantAnimals.contains(animalToDraw);
 
@@ -171,12 +170,12 @@ public class SimulationPresenter implements MapChangeListener {
         double dotOffset = (cellSize - animalSize) / 2;
         double barOffsetX = (cellSize - barWidth) / 2;
 
-        double dotDrawY = y + dotOffset - 3;
+        double dotDrawY = y + dotOffset - 2;
 
         if (isDominant) {
-            gc.setStroke(Color.PURPLE);
+            gc.setStroke(Color.BLACK);
             gc.setLineWidth(cellSize * 0.08);
-            gc.strokeOval(x + dotOffset - 2, dotDrawY - 2, animalSize + 4, animalSize + 4);
+            gc.strokeOval(x + dotOffset - 1, dotDrawY - 1, animalSize + 2, animalSize + 2);
         }
 
         if (animal instanceof Herbivore) gc.setFill(Color.BLUE);
@@ -185,13 +184,19 @@ public class SimulationPresenter implements MapChangeListener {
 
         gc.fillOval(x + dotOffset, dotDrawY, animalSize, animalSize);
 
-        double maxEnergy = parameters.startAnimalEnergy();
+        double maxEnergy = 1;
+        if (animal instanceof Herbivore) {
+            maxEnergy = parameters.startAnimalEnergy();
+        }
+        if (animal instanceof Parasite) {
+            maxEnergy = parameters.startParasiteEnergy();
+        }
         double energyPercentage = (double) animal.getEnergy() / maxEnergy;
         energyPercentage = Math.min(1.0, Math.max(0.0, energyPercentage));
 
         double filledWidth = barWidth * energyPercentage;
 
-        double barDrawY = y + cellSize - 6;
+        double barDrawY = y + cellSize*0.8;
 
         gc.setFill(Color.DARKGRAY);
         gc.fillRect(x + barOffsetX, barDrawY, barWidth, barHeight);

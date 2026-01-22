@@ -25,10 +25,6 @@ public class Genome {
         this.genes = childGenes;
     }
 
-    public int getLength() {
-        return genes.size();
-    }
-
     public void next() {
         currentIndex = (currentIndex + 1) % genes.size();
     }
