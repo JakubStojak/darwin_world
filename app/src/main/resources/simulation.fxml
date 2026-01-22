@@ -37,10 +37,10 @@
 
                 <LineChart fx:id="statChart" createSymbols="false" HBox.hgrow="ALWAYS">
                     <xAxis>
-                        <NumberAxis label="Dzień" autoRanging="true" forceZeroInRange="false"/>
+                        <NumberAxis label="Dzień" forceZeroInRange="false"/>
                     </xAxis>
                     <yAxis>
-                        <NumberAxis label="Wartość" autoRanging="true"/>
+                        <NumberAxis label="Wartość"/>
                     </yAxis>
                 </LineChart>
 

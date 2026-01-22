@@ -23,14 +23,6 @@ public abstract class Animal implements WorldElement {
         this.genome = genome;
     }
 
-    public MapDirection getDirection() {
-        return direction;
-    }
-
-    public void setDirection(MapDirection direction) {
-        this.direction = direction;
-    }
-
     public Genome getGenome() {
         return genome;
     }
@@ -47,15 +39,11 @@ public abstract class Animal implements WorldElement {
         return age;
     }
 
-    public int getDeathDate() {
-        return deathDate;
-    }
-
     public void setDeathDate(int date) {
         deathDate = date;
     }
 
-    public Vector2d getPosition() {
+    public Vector2d position() {
         return position;
     }
 
@@ -63,9 +51,6 @@ public abstract class Animal implements WorldElement {
         this.position = position;
     }
 
-    public UUID getId() {
-        return id;
-    }
 
     public Boolean isDead() {
         return energy <= 0;
@@ -74,15 +59,6 @@ public abstract class Animal implements WorldElement {
     @Override
     public String toString() {
         return direction.toString();
-    }
-
-    public boolean isAt(Vector2d position) {
-        return this.position.equals(position);
-    }
-
-    public void turn() {
-        this.direction = this.direction.rotate(this.genome.getMove());
-        this.energy -= params.energyLossPerDay();
     }
 
     public boolean canReproduce(Animal other) {
@@ -98,7 +74,6 @@ public abstract class Animal implements WorldElement {
         return this.energy > params.saturationEnergy()
                 && other.energy > params.saturationEnergy();
     }
-
 
     public void oppositeDirection() {
         direction = direction.rotate(4);

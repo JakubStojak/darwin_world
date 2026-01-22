@@ -10,11 +10,10 @@ class GlobeMapTest {
 
     Parameters params = new Parameters(5, 5, 1, 1, 1,
             5, 5, 1, 1, 1,
-            2, 5, 1, 1, 1);
+            2, 5, 1, 1,1, 1);
 
     @Test
     void testGlobeMapWrapping() {
-        Parameters params = new Parameters(5, 5, 1, 1, 1, 5, 5, 1, 1, 1, 1, 1, 1, 1, 1);
         GlobeMap map = new GlobeMap(params);
 
         Vector2d edgePos = new Vector2d(4, 2);
@@ -67,7 +66,7 @@ class GlobeMapTest {
 
         map.move(parasite);
 
-        Vector2d distance = parasite.getPosition().subtract(host.getPosition());
+        Vector2d distance = parasite.position().subtract(host.position());
         assertTrue(Math.sqrt(distance.getX()^2 + distance.getY()^2) <= Math.sqrt(2), "Pasożyt powinien być obok hosta po jego ruchu");
     }
 

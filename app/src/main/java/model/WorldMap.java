@@ -21,20 +21,20 @@ public interface WorldMap extends MoveValidator {
     void plant(Grass plant) throws IncorrectPositionException;
 
     /**
-     * Check if the position is occupied by plant.
+     * Check if plant occupies the position.
      * @return if the position is occupied
      */
     boolean isOccupiedByPlant(Vector2d position);
 
     /**
-     * Remove animal from map.
-     * @param animal The animal to be removed from map.
+     * Remove animal from the map.
+     * @param animal The animal to be removed from the map.
      */
     void removeAnimal(Animal animal);
 
     /**
-     * Remove plant from map
-     * @param plant The animal to be removed from map.
+     * Remove plant from the map
+     * @param plant The animal to be removed from the map.
      */
     void removePlant(Grass plant);
 
@@ -49,8 +49,8 @@ public interface WorldMap extends MoveValidator {
     /**
      * Moves all animals on the map.
      */
-    void moveAllAnimals();
 
+    void moveAllAnimals();
 
     /**
      * Remove animals with energy lower than 0.
@@ -80,10 +80,22 @@ public interface WorldMap extends MoveValidator {
      */
     int numberOfPlantsOnMap();
 
+    /**
+     * Get the grid's height and width.
+     * @return Boundary(width, height).
+     */
     Boundary getCurrentBounds();
 
+    /**
+     * Get the count of all animals.
+     * @return number of all animals on the map.
+     */
     int getAnimalCount();
 
+    /**
+     * Get the map's UUID.
+     * @return map's UUID.
+     */
     UUID getId();
 
 }

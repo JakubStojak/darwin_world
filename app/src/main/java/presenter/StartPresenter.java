@@ -69,7 +69,7 @@ public class StartPresenter {
         startAnimalEnergyField.setText("15");
         startAnimalNumberField.setText("4");
         energyLossPerDayField.setText("1");
-        saturationEnergyField.setText("5");
+        saturationEnergyField.setText("10");
         minimumMutationsField.setText("0");
         maximumMutationsField.setText("2");
         genomeLengthField.setText("8");
@@ -243,6 +243,9 @@ public class StartPresenter {
             if (saturation <= 0) throw new IllegalArgumentException("Energia nasycenia musi być > 0!");
             if (startAnimals < 0 || startGrass < 0)
                 throw new IllegalArgumentException("Ilość obiektów nie może być ujemna!");
+            if (2 * saturation < startEnergy) {
+                throw new IllegalArgumentException("Energia startowa musi być przynajmniej 2x mniejsza od energii ssaturacji!");
+            }
 
             if (parasitesCheckBox.isSelected()) {
                 if (startParasiteEnergy <= 0)

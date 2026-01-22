@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ParasiteTest {
     Parameters params = new Parameters(5, 5, 1, 1, 1,
             5, 5, 1, 1, 1,
-            2, 5, 1, 1, 1);
+            2, 5, 1, 1,1, 1);
 
     @Test
     void testMoveWithoutHost() {
@@ -22,7 +22,7 @@ class ParasiteTest {
 
         parasite.move();
 
-        assertEquals(expectedPosition, parasite.getPosition());
+        assertEquals(expectedPosition, parasite.position());
     }
 
     @Test
