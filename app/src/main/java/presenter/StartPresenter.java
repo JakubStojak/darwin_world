@@ -244,7 +244,7 @@ public class StartPresenter {
             if (startAnimals < 0 || startGrass < 0)
                 throw new IllegalArgumentException("Ilość obiektów nie może być ujemna!");
             if (2 * saturation < startEnergy) {
-                throw new IllegalArgumentException("Energia startowa musi być przynajmniej 2x mniejsza od energii ssaturacji!");
+                throw new IllegalArgumentException("Energia startowa musi być mniejsza lub równa dwukrotności energii saturacji!");
             }
 
             if (parasitesCheckBox.isSelected()) {

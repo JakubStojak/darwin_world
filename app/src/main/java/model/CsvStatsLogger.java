@@ -2,25 +2,50 @@ package model;
 
 import util.Statistics;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Locale;
 
 public class CsvStatsLogger implements MapChangeListener {
-    private final String fileName;
+    private static final String STATS_DIRECTORY = "stats";
+
+    private final Path statsFolderPath;
+    private final String currentFileName;
 
     public CsvStatsLogger(String mapId) {
-        this.fileName = "stats_" + mapId + ".csv";
+        Path localPath = Paths.get(STATS_DIRECTORY);
+        Path modulePath = Paths.get("app", STATS_DIRECTORY);
+
+        if (Files.exists(Paths.get("app"))) {
+            this.statsFolderPath = modulePath;
+        } else {
+            this.statsFolderPath = localPath;
+        }
+
+        try {
+            if (!Files.exists(statsFolderPath)) {
+                Files.createDirectories(statsFolderPath);
+            }
+        } catch (IOException e) {
+            System.err.println("Nie udało się utworzyć katologu statystyk: " + e.getMessage());
+        }
+
+        this.currentFileName = "stats_" + mapId + ".csv";
         createHeader();
     }
 
     private void createHeader() {
-        File file = new File(fileName);
-        if (!file.exists()) {
-            try (FileWriter writer = new FileWriter(fileName, true)) {
+        Path fullPath = statsFolderPath.resolve(currentFileName);
+        if (!Files.exists(fullPath)) {
+            try (BufferedWriter writer = Files.newBufferedWriter(fullPath, StandardOpenOption.CREATE)) {
                 writer.write("Day;AnimalCount;PlantCount;FreeFields;AvgEnergy;AvgLifespan;AvgChildren;TopGenotype");
-                writer.write(System.lineSeparator());
+                writer.newLine();
             } catch (IOException e) {
                 System.err.println("Nie udało się utworzyć nagłówka:" + e.getMessage());
             }
@@ -35,12 +60,15 @@ public class CsvStatsLogger implements MapChangeListener {
             Statistics stats = abstractMap.getStatistics();
             String day = extractDay(message);
 
-            try (FileWriter writer = new FileWriter(fileName, true)) {
-                String line = String.format("%s;%d;%d;%d;%.2f;%.2f;%.2f;%s\n",
+            Path fullPath = statsFolderPath.resolve(currentFileName);
+
+            try (BufferedWriter writer = Files.newBufferedWriter(fullPath, StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
+                String line = String.format("%s;%d;%d;%d;%.2f;%.2f;%.2f;%s",
                         day, stats.animalCount(), stats.plantCount(), stats.freeFieldsCount(), stats.averageEnergy(), stats.averageLifespan(), stats.averageChildren(), stats.topGenotype()
                 );
 
                 writer.write(line);
+                writer.newLine();
             } catch (IOException e) {
                 System.err.println("Błąd zapisu: " + e.getMessage());
             }

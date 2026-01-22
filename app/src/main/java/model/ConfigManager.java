@@ -2,9 +2,7 @@ package model;
 
 import util.Parameters;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,12 +14,33 @@ import java.util.stream.Stream;
 
 public class ConfigManager {
     private static final String CONFIG_DIRECTORY = "configs";
+    private final Path configPath;
 
     public ConfigManager() {
+        Path localPath = Paths.get(CONFIG_DIRECTORY);
+        Path modulePath = Paths.get("app", CONFIG_DIRECTORY);
+
+        if (Files.exists(localPath)) {
+            this.configPath = localPath;
+        } else if (Files.exists(modulePath)) {
+            this.configPath = modulePath;
+        } else {
+            if (Files.exists(Paths.get("app"))) {
+                this.configPath = modulePath;
+            } else {
+                this.configPath = localPath;
+            }
+        }
+        createConfigDirectory();
+    }
+
+    private void createConfigDirectory() {
         try {
-            Files.createDirectories(Paths.get(CONFIG_DIRECTORY));
+            if (!Files.exists(configPath)) {
+                Files.createDirectories(configPath);
+            }
         } catch (IOException e) {
-            System.err.println("Nie udało się utworzyć folderu konfiguracji: " + e.getMessage());
+            System.err.println("Nie udało się utworzyć katalogu konfiguracji: " + e.getMessage());
         }
     }
 
@@ -45,18 +64,18 @@ public class ConfigManager {
         props.setProperty("hostEnergyLossPerParasite", String.valueOf(params.hostEnergyLossPerParasite()));
         props.setProperty("energyLossForParasiteWithoutHost", String.valueOf(params.energyLossForParasiteWithoutHost()));
 
-        String filename = CONFIG_DIRECTORY + "/" + name + ".properties";
-        try (FileOutputStream out = new FileOutputStream(filename)) {
-            props.store(out, "Konfiguracja symulacji: " + name);
+        Path fullPath = configPath.resolve(name + ".properties");
+        try (Writer writer = Files.newBufferedWriter(fullPath)) {
+            props.store(writer, "Konfiguracja symulacji: " + name);
         }
     }
 
     public Parameters loadConfig(String name) throws IOException {
         Properties props = new Properties();
-        String filename = CONFIG_DIRECTORY + "/" + name + ".properties";
+        Path fullPath = configPath.resolve(name + ".properties");
 
-        try (FileInputStream in = new FileInputStream(filename)) {
-            props.load(in);
+        try (Reader reader = Files.newBufferedReader(fullPath)) {
+            props.load(reader);
         }
 
         return new Parameters(
@@ -80,7 +99,10 @@ public class ConfigManager {
     }
 
     public List<String> getAvailableConfigs() {
-        try (Stream<Path> paths = Files.list(Paths.get(CONFIG_DIRECTORY))) {
+        if (!Files.exists(configPath)) {
+            return Collections.emptyList();
+        }
+        try (Stream<Path> paths = Files.list(configPath)) {
             return paths
                     .filter(file -> !Files.isDirectory(file))
                     .map(Path::getFileName)
