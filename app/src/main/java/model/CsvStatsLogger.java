@@ -1,16 +1,11 @@
 package model;
-
 import util.Statistics;
-
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.Locale;
 
 public class CsvStatsLogger implements MapChangeListener {
     private static final String STATS_DIRECTORY = "stats";

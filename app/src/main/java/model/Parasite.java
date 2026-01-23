@@ -18,6 +18,7 @@ public class Parasite extends Animal {
             MapDirection moveDirection = MapDirection.fromInt(this.genome.getMove());
             this.position = this.position.add(moveDirection.toUnitVector());
             this.genome.next();
+            this.setDirection(moveDirection);
         }
     }
 

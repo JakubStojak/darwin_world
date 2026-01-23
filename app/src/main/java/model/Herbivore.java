@@ -37,6 +37,7 @@ public class Herbivore extends Animal {
                 this.genome.next();
                 Vector2d newPosition = this.position.add(moveDirection.toUnitVector());
                 this.setPosition(newPosition);
+                this.setDirection(moveDirection);
             }
         }
         else {
@@ -44,6 +45,7 @@ public class Herbivore extends Animal {
             this.genome.next();
             Vector2d newPosition = this.position.add(moveDirection.toUnitVector());
             this.setPosition(newPosition);
+            this.setDirection(moveDirection);
         }
     }
 

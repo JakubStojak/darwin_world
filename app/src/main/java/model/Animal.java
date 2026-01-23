@@ -82,6 +82,10 @@ public abstract class Animal implements WorldElement {
     public void move() {
     }
 
+    public void setDirection(MapDirection direction) {
+        this.direction = direction;
+    }
+
     public void loseEnergyForBreed() {
         this.energy -= params.saturationEnergy();
     }
@@ -91,5 +95,9 @@ public abstract class Animal implements WorldElement {
     }
 
     public abstract <T extends Animal> Animal reproduce(T parent2);
+
+    public MapDirection getDirection() {
+        return this.direction;
+    }
 }
 

@@ -102,7 +102,7 @@ public class SimulationPresenter implements MapChangeListener {
 
     private void drawMap(WorldMap map) {
         GraphicsContext gc = mapGrid.getGraphicsContext2D();
-        gc.setFill(Color.LIGHTGRAY);
+        gc.setFill(Color.GRAY);
         gc.fillRect(0, 0, mapGrid.getWidth(), mapGrid.getHeight());
 
         if (map == null) return;
@@ -115,7 +115,7 @@ public class SimulationPresenter implements MapChangeListener {
 
         double cellSize = Math.min(canvasWidth / gridWidth, canvasHeight / gridHeight);
 
-        gc.setFill(Color.WHITESMOKE);
+        gc.setFill(Color.WHITE);
         gc.fillRect(0, 0, gridWidth * cellSize, gridHeight * cellSize);
 
         int minX = bounds.lowerLeft().getX();
@@ -130,29 +130,27 @@ public class SimulationPresenter implements MapChangeListener {
                 double drawY = (maxY - y) * cellSize;
 
                 if (map.isOccupiedByPlant(position)) {
-                    gc.setFill(Color.FORESTGREEN);
+                    gc.setFill(Color.MEDIUMSEAGREEN);
                     gc.fillRect(drawX, drawY, cellSize, cellSize);
-                    if (dominantPositions.contains(position)) {
-                        gc.setStroke(Color.GOLD);
-                        gc.setLineWidth(1);
-                        gc.strokeRect(drawX + 1.5, drawY + 1.5, cellSize - 3, cellSize - 3);
-                    }
+                }
+                if (dominantPositions.contains(position)) {
+                gc.setStroke(Color.BLACK);
+                    gc.setLineWidth(1);
+                    gc.strokeRect(drawX + 1.5, drawY + 1.5, cellSize - 3, cellSize - 3);
                 }
 
                 if (map instanceof AbstractWorldMap abstractMap) {
                     List<Animal> animalsAtPos = abstractMap.getAnimalsAt(position);
                     if (!animalsAtPos.isEmpty()) {
                         Animal animalToDraw = animalsAtPos.getFirst();
-
                         boolean isDominant = dominantAnimals.contains(animalToDraw);
-
                         drawAnimalWithEnergyBar(gc, animalToDraw, drawX, drawY, cellSize, isDominant);
                     }
                 }
             }
         }
 
-        gc.setStroke(Color.GRAY);
+        gc.setStroke(Color.BLACK);
         gc.setLineWidth(0.5);
         for (int x = 0; x <= (maxX - minX + 1); x++) {
             gc.strokeLine(x * cellSize, 0, x * cellSize, gridHeight * cellSize);
@@ -178,11 +176,59 @@ public class SimulationPresenter implements MapChangeListener {
             gc.strokeOval(x + dotOffset - 1, dotDrawY - 1, animalSize + 2, animalSize + 2);
         }
 
-        if (animal instanceof Herbivore) gc.setFill(Color.BLUE);
-        else if (animal instanceof Parasite) gc.setFill(Color.RED);
+        if (animal instanceof Herbivore) gc.setFill(Color.LIGHTBLUE);
+        else if (animal instanceof Parasite) gc.setFill(Color.LIGHTPINK);
         else gc.setFill(Color.ORANGE);
 
         gc.fillOval(x + dotOffset, dotDrawY, animalSize, animalSize);
+
+        gc.setFill(Color.BLACK);
+        double r = animalSize / 2.0;
+        double cx = x + dotOffset + r;
+        double cy = dotDrawY + r;
+        double eyeDist = r * 0.6;
+        double eyeSpace = r * 0.3;
+        double eyeSize = animalSize * 0.15;
+
+        double e1x = cx, e1y = cy, e2x = cx, e2y = cy;
+
+        switch (animal.getDirection()) {
+            case NORTH -> {
+                e1x = cx - eyeSpace; e1y = cy - eyeDist;
+                e2x = cx + eyeSpace; e2y = cy - eyeDist;
+            }
+            case SOUTH -> {
+                e1x = cx - eyeSpace; e1y = cy + eyeDist;
+                e2x = cx + eyeSpace; e2y = cy + eyeDist;
+            }
+            case WEST -> {
+                e1x = cx - eyeDist; e1y = cy - eyeSpace;
+                e2x = cx - eyeDist; e2y = cy + eyeSpace;
+            }
+            case EAST -> {
+                e1x = cx + eyeDist; e1y = cy - eyeSpace;
+                e2x = cx + eyeDist; e2y = cy + eyeSpace;
+            }
+            case NORTHEAST -> {
+                e1x = cx + eyeDist * 0.2; e1y = cy - eyeDist;
+                e2x = cx + eyeDist;       e2y = cy - eyeDist * 0.2;
+            }
+            case NORTHWEST -> {
+                e1x = cx - eyeDist * 0.2; e1y = cy - eyeDist;
+                e2x = cx - eyeDist;       e2y = cy - eyeDist * 0.2;
+            }
+            case SOUTHEAST -> {
+                e1x = cx + eyeDist;       e1y = cy + eyeDist * 0.2;
+                e2x = cx + eyeDist * 0.2; e2y = cy + eyeDist;
+            }
+            case SOUTHWEST -> {
+                e1x = cx - eyeDist;       e1y = cy + eyeDist * 0.2;
+                e2x = cx - eyeDist * 0.2; e2y = cy + eyeDist;
+            }
+        }
+
+        gc.fillOval(e1x - eyeSize / 2, e1y - eyeSize / 2, eyeSize, eyeSize);
+        gc.fillOval(e2x - eyeSize / 2, e2y - eyeSize / 2, eyeSize, eyeSize);
 
         double maxEnergy = 1;
         if (animal instanceof Herbivore) {
@@ -201,7 +247,7 @@ public class SimulationPresenter implements MapChangeListener {
         gc.setFill(Color.DARKGRAY);
         gc.fillRect(x + barOffsetX, barDrawY, barWidth, barHeight);
 
-        if (energyPercentage > 0.7) gc.setFill(Color.LIMEGREEN);
+        if (energyPercentage > 0.7) gc.setFill(Color.MEDIUMSEAGREEN);
         else if (energyPercentage > 0.3) gc.setFill(Color.YELLOW);
         else gc.setFill(Color.RED);
 
