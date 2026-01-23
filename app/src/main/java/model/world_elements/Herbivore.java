@@ -1,5 +1,6 @@
-package model;
+package model.world_elements;
 
+import util.Vector2d;
 import util.MapDirection;
 import util.Parameters;
 
@@ -39,8 +40,7 @@ public class Herbivore extends Animal {
                 this.setPosition(newPosition);
                 this.setDirection(moveDirection);
             }
-        }
-        else {
+        } else {
             MapDirection moveDirection = MapDirection.fromInt(this.getGenome().getMove());
             this.genome.next();
             Vector2d newPosition = this.position.add(moveDirection.toUnitVector());

@@ -1,7 +1,5 @@
 package util;
 
-import model.Vector2d;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Random;
@@ -27,9 +25,9 @@ public class RandomPositionGenerator implements Iterable<Vector2d>{
 
     @Override
     public Iterator<Vector2d> iterator() {
-        return new Iterator<Vector2d>() {
+        return new Iterator<>() {
             int generated = 0;
-            Random random = new Random();
+            final Random random = new Random();
 
             @Override
             public boolean hasNext() {

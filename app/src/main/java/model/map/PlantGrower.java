@@ -1,5 +1,7 @@
-package model;
+package model.map;
 
+import util.Vector2d;
+import model.world_elements.Grass;
 import util.Parameters;
 
 import java.util.ArrayList;
@@ -36,7 +38,7 @@ public class PlantGrower {
         double totalChanceSum = Arrays.stream(currentTurnChances).sum();
 
         int successfullyPlantedCount = 0;
-        int totalEmptyFields = ((parameters.mapWidth() * parameters.mapHeight())  - map.numberOfPlantsOnMap());
+        int totalEmptyFields = ((parameters.mapWidth() * parameters.mapHeight()) - map.numberOfPlantsOnMap());
         int targetPlantCount = Math.min(requestedPlantCount, totalEmptyFields);
 
         while (successfullyPlantedCount < targetPlantCount) {

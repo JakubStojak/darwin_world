@@ -1,4 +1,7 @@
-package model;
+package model.world_elements;
+
+import util.Vector2d;
+
 public interface WorldElement {
     /**
      * Get the string representation

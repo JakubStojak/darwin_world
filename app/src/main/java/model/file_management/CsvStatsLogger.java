@@ -1,5 +1,10 @@
-package model;
+package model.file_management;
+
+import model.map.AbstractWorldMap;
+import model.map.MapChangeListener;
+import model.map.WorldMap;
 import util.Statistics;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;

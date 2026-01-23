@@ -1,8 +1,12 @@
 package model;
 
+import model.world_elements.Genome;
+import model.world_elements.Herbivore;
+import model.world_elements.Parasite;
 import org.junit.jupiter.api.Test;
 import util.MapDirection;
 import util.Parameters;
+import util.Vector2d;
 
 import static org.junit.jupiter.api.Assertions.*;
 

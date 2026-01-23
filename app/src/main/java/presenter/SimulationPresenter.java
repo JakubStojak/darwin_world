@@ -10,10 +10,14 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import model.*;
-import util.Boundary;
-import util.Parameters;
-import util.StatType;
-import util.Statistics;
+import model.file_management.CsvStatsLogger;
+import model.map.AbstractWorldMap;
+import model.map.MapChangeListener;
+import model.map.WorldMap;
+import model.world_elements.Animal;
+import model.world_elements.Herbivore;
+import model.world_elements.Parasite;
+import util.*;
 
 import java.util.*;
 
@@ -134,7 +138,7 @@ public class SimulationPresenter implements MapChangeListener {
                     gc.fillRect(drawX, drawY, cellSize, cellSize);
                 }
                 if (dominantPositions.contains(position)) {
-                gc.setStroke(Color.BLACK);
+                    gc.setStroke(Color.BLACK);
                     gc.setLineWidth(1);
                     gc.strokeRect(drawX + 1.5, drawY + 1.5, cellSize - 3, cellSize - 3);
                 }
@@ -194,36 +198,52 @@ public class SimulationPresenter implements MapChangeListener {
 
         switch (animal.getDirection()) {
             case NORTH -> {
-                e1x = cx - eyeSpace; e1y = cy - eyeDist;
-                e2x = cx + eyeSpace; e2y = cy - eyeDist;
+                e1x = cx - eyeSpace;
+                e1y = cy - eyeDist;
+                e2x = cx + eyeSpace;
+                e2y = cy - eyeDist;
             }
             case SOUTH -> {
-                e1x = cx - eyeSpace; e1y = cy + eyeDist;
-                e2x = cx + eyeSpace; e2y = cy + eyeDist;
+                e1x = cx - eyeSpace;
+                e1y = cy + eyeDist;
+                e2x = cx + eyeSpace;
+                e2y = cy + eyeDist;
             }
             case WEST -> {
-                e1x = cx - eyeDist; e1y = cy - eyeSpace;
-                e2x = cx - eyeDist; e2y = cy + eyeSpace;
+                e1x = cx - eyeDist;
+                e1y = cy - eyeSpace;
+                e2x = cx - eyeDist;
+                e2y = cy + eyeSpace;
             }
             case EAST -> {
-                e1x = cx + eyeDist; e1y = cy - eyeSpace;
-                e2x = cx + eyeDist; e2y = cy + eyeSpace;
+                e1x = cx + eyeDist;
+                e1y = cy - eyeSpace;
+                e2x = cx + eyeDist;
+                e2y = cy + eyeSpace;
             }
             case NORTHEAST -> {
-                e1x = cx + eyeDist * 0.2; e1y = cy - eyeDist;
-                e2x = cx + eyeDist;       e2y = cy - eyeDist * 0.2;
+                e1x = cx + eyeDist * 0.2;
+                e1y = cy - eyeDist;
+                e2x = cx + eyeDist;
+                e2y = cy - eyeDist * 0.2;
             }
             case NORTHWEST -> {
-                e1x = cx - eyeDist * 0.2; e1y = cy - eyeDist;
-                e2x = cx - eyeDist;       e2y = cy - eyeDist * 0.2;
+                e1x = cx - eyeDist * 0.2;
+                e1y = cy - eyeDist;
+                e2x = cx - eyeDist;
+                e2y = cy - eyeDist * 0.2;
             }
             case SOUTHEAST -> {
-                e1x = cx + eyeDist;       e1y = cy + eyeDist * 0.2;
-                e2x = cx + eyeDist * 0.2; e2y = cy + eyeDist;
+                e1x = cx + eyeDist;
+                e1y = cy + eyeDist * 0.2;
+                e2x = cx + eyeDist * 0.2;
+                e2y = cy + eyeDist;
             }
             case SOUTHWEST -> {
-                e1x = cx - eyeDist;       e1y = cy + eyeDist * 0.2;
-                e2x = cx - eyeDist * 0.2; e2y = cy + eyeDist;
+                e1x = cx - eyeDist;
+                e1y = cy + eyeDist * 0.2;
+                e2x = cx - eyeDist * 0.2;
+                e2y = cy + eyeDist;
             }
         }
 
@@ -242,7 +262,7 @@ public class SimulationPresenter implements MapChangeListener {
 
         double filledWidth = barWidth * energyPercentage;
 
-        double barDrawY = y + cellSize*0.8;
+        double barDrawY = y + cellSize * 0.8;
 
         gc.setFill(Color.DARKGRAY);
         gc.fillRect(x + barOffsetX, barDrawY, barWidth, barHeight);

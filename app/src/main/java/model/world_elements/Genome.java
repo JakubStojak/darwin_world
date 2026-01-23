@@ -1,4 +1,4 @@
-package model;
+package model.world_elements;
 
 import util.Parameters;
 

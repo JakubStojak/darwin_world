@@ -1,6 +1,9 @@
-package model;
+package model.map;
 
+import model.world_elements.Animal;
+import model.world_elements.Grass;
 import util.Boundary;
+import util.Vector2d;
 
 import java.util.UUID;
 

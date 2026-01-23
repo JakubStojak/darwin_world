@@ -1,8 +1,12 @@
-package model;
+package model.map;
 
+import model.world_elements.Animal;
+import model.world_elements.Genome;
+import model.world_elements.Grass;
 import util.Boundary;
 import util.Parameters;
 import util.Statistics;
+import util.Vector2d;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,7 +33,7 @@ public abstract class AbstractWorldMap implements WorldMap {
         observers.add(observer);
     }
 
-    protected void mapChanged(String message) {
+    public void mapChanged(String message) {
         for (MapChangeListener observer : observers) {
             observer.mapChanged(this, message);
         }

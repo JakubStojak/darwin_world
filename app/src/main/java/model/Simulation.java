@@ -1,5 +1,6 @@
 package model;
 
+import model.map.GlobeMap;
 import util.Parameters;
 
 public class Simulation implements Runnable {
@@ -38,17 +39,13 @@ public class Simulation implements Runnable {
                 }
                 continue;
             }
-
             try {
                 simulateDay();
-
                 if (map.getAnimalCount() == 0) {
                     map.mapChanged("GAME OVER");
                     stop();
                     break;
                 }
-
-
                 Thread.sleep(SIMULATION_DELAY);
             } catch (InterruptedException e) {
                 System.out.println("Symulacja przerwana");

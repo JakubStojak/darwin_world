@@ -1,6 +1,8 @@
 package model;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import model.world_elements.Genome;
 import org.junit.jupiter.api.Test;
 import util.Parameters;
 

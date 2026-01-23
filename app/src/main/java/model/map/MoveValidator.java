@@ -1,4 +1,7 @@
-package model;
+package model.map;
+
+import util.Vector2d;
+import model.world_elements.Animal;
 
 public interface MoveValidator {
 

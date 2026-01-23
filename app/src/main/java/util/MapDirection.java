@@ -1,7 +1,5 @@
 package util;
 
-import model.Vector2d;
-
 public enum MapDirection {
     NORTH,
     NORTHEAST,

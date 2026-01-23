@@ -1,5 +1,6 @@
-package model;
+package model.world_elements;
 
+import util.Vector2d;
 import util.MapDirection;
 import util.Parameters;
 

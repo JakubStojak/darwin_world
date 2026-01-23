@@ -1,8 +1,14 @@
 package model;
 
+import model.map.GlobeMap;
+import model.map.IncorrectPositionException;
+import model.world_elements.Genome;
+import model.world_elements.Herbivore;
+import model.world_elements.Parasite;
 import org.junit.jupiter.api.Test;
 import util.MapDirection;
 import util.Parameters;
+import util.Vector2d;
 
 import static org.junit.jupiter.api.Assertions.*;
 

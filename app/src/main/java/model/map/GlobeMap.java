@@ -1,8 +1,11 @@
-package model;
+package model.map;
 
+import model.world_elements.*;
 import util.MapDirection;
 import util.Parameters;
 import util.RandomPositionGenerator;
+import util.Vector2d;
+
 import java.util.*;
 
 

@@ -1,5 +1,6 @@
-package model;
+package model.world_elements;
 
+import util.Vector2d;
 import util.MapDirection;
 import util.Parameters;
 
@@ -12,7 +13,7 @@ public abstract class Animal implements WorldElement {
     protected Vector2d position;
     protected int energy;
     protected final Genome genome;
-    protected int age = 0;
+    public int age = 0;
     protected int childrenCount = 0;
     protected int deathDate;
 
