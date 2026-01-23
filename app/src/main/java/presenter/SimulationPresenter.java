@@ -40,7 +40,7 @@ public class SimulationPresenter implements MapChangeListener {
     private int dayCounter = 0;
     private Set<Animal> dominantAnimals = new HashSet<>();
     private Set<Vector2d> dominantPositions = new HashSet<>();
-    private final float GENOME_PERCENTAGE = 0.7F;
+    private final double GENOME_PERCENTAGE = 0.5;
 
     public void setTrackedStat(StatType statType) {
         this.trackedStat = statType;
