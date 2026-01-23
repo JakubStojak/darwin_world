@@ -16,9 +16,17 @@ Projekt realizuje całą funkcjonalność podstawową projektu w wariancie "Paso
 - Wyróżnianie wizualne zwierzaków z dominującym (najpopularniejszym) genotypem oraz pozycji preferowanych przez rośliny 
 - Zapisywanie statystyk symulacji do pliku CSV po każdym dniu 
 - Wizualizacja wybranej statystyki na wykresie, zmieniającym się w trakcie symulacji 
-- Skalowanie rozmiaru mapy w zależności od rozmiaru (+2xp) 
+- Skalowanie rozmiaru mapy w zależności od rozmiaru 
 - Własny, zaakceptowany przez prowadzącego pomysł (jest to choroba: każdy zwierzak, który ma pasożyty jest w stanie choroby, która sprawia, że prawdopodobieństwo wykonania ruchu w danej turze spada proporcjonalnie do ilości pasożytów)
 
+Ważne założenia, które przyjęliśmy podczas realizacji projektu (nieskonkretyzowane w poleceniu):
+--
+- energia startowa może wynosić maksymalnie dwukrotność energii saturacji (podczas rozmnażania nie może powstawać dodatkowa energia)
+- pasożyty mogą rozmnażać się tylko z pasożytami, a roślinożercy z roślinożercami
+- podczas szukania dominującego genotypu stosujemy dystans Lavenssteina i grupujemy na rodziny, zgodne w minimum 50% genotypu
+- mapa działa jak globus, więc przechodząc granice północne zataczamy koło jak na mapie kuli ziemskiej
+- rośliny są generowane zgodnie z rozkładem normalnym względem ich pozycji
+- konfiguracje zapisywane są w folderze configs, a pliki .csv w folderze stats
 
 Widok startowy symulacji:
 --
