@@ -1,10 +1,8 @@
-# PO_2025_PT1130_STOJAK_NARTOWSKI
+# Darwin World 
 
 Projekt na potrzeby przedmiotu Programowanie Obiektowe na Wydziale Informatyki AGH, 2025/26.
 
 Autorzy: Jakub Stojak i Adam Nartowski
-
-Grupa: Piątek 11:30 
 
 Opis Projektu:
 --
